@@ -5,6 +5,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.OptionInstance;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.options.OptionsSubScreen;
@@ -12,11 +13,11 @@ import net.minecraft.client.gui.components.debug.DebugScreenProfile;
 import net.minecraft.network.chat.Component;
 
 import java.util.EnumMap;
-import java.util.List;
 
 public final class OldMCSettingsScreen extends OptionsSubScreen {
     private final EnumMap<OldMCOptions, OptionInstance<Boolean>> controls = new EnumMap<>(OldMCOptions.class);
 
+    private OldMCOptionList rows;
     private boolean majorVersionFormat = OldMCOptions.usesMajorVersionFormat();
 
     public OldMCSettingsScreen(Screen parent) {
@@ -34,15 +35,40 @@ public final class OldMCSettingsScreen extends OptionsSubScreen {
     }
 
     @Override
+    protected void addContents() {
+        rows = layout.addToContents(new OldMCOptionList(minecraft, width, layout));
+        addOptions();
+    }
+
+    @Override
+    protected void repositionElements() {
+        super.repositionElements();
+        if (rows != null) rows.updateSize(width, layout);
+    }
+
+    @Override
     protected void addOptions() {
-        controls.values().forEach(list::addBig);
+        controls.forEach((option, control) -> {
+            // Boolean OptionInstances create vanilla on/off cycle buttons.
+            @SuppressWarnings("unchecked")
+            var toggle = (CycleButton<Boolean>) control.createButton(options, 0, 0, OldMCOptionList.VALUE_WIDTH);
+            rows.addOption(toggle, Component.translatable("oldmc.option." + option.key),
+                    () -> !control.get(), () -> {
+                        control.set(true);
+                        toggle.setValue(true);
+                    });
+        });
         if (controls.containsKey(OldMCOptions.VERSION)) {
             var button = Button.builder(formatLabel(), clicked -> {
                 majorVersionFormat = !majorVersionFormat;
                 clicked.setMessage(formatLabel());
-            }).width(310).build();
+            }).width(OldMCOptionList.VALUE_WIDTH).build();
             button.setTooltip(Tooltip.create(Component.translatable("oldmc.option.versionFormat.tooltip")));
-            list.addSmall(List.of(button));
+            rows.addOption(button, Component.translatable("oldmc.versionFormat.name"),
+                    () -> majorVersionFormat, () -> {
+                        majorVersionFormat = false;
+                        button.setMessage(formatLabel());
+                    });
         }
     }
 

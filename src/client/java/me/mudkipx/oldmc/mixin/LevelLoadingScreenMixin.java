@@ -42,7 +42,7 @@ abstract class LevelLoadingScreenMixin {
     @ModifyExpressionValue(method = RenderTargets.SCREEN_RENDER, at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/multiplayer/LevelLoadTracker;statusView()Lnet/minecraft/server/level/progress/ChunkLoadStatusView;"))
     private ChunkLoadStatusView oldmc$choosePhase(ChunkLoadStatusView chunks) {
-        if (!OldMCOptions.TERRAIN.enabled()) {
+        if (!OldMCOptions.PERCENTAGE.enabled()) {
             oldmc$terrainFrame = false;
             return chunks;
         }
@@ -56,7 +56,7 @@ abstract class LevelLoadingScreenMixin {
     @ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/multiplayer/LevelLoadTracker;isLevelReady()Z"))
     private boolean oldmc$finishPresentation(boolean ready) {
-        return ready && (!OldMCOptions.TERRAIN.enabled() || oldmc$finishState().mayClose(oldmc$now()));
+        return ready && (!OldMCOptions.PERCENTAGE.enabled() || oldmc$finishState().mayClose(oldmc$now()));
     }
 
     @ModifyArgs(
@@ -65,9 +65,8 @@ abstract class LevelLoadingScreenMixin {
     )
     private void oldmc$showPercentage(Args draw) {
         if (oldmc$terrainFrame || !OldMCOptions.PERCENTAGE.enabled()) return;
-        boolean terrainEnabled = OldMCOptions.TERRAIN.enabled();
-        boolean full = terrainEnabled && oldmc$finishState().full();
-        ChunkLoadStatusView chunks = terrainEnabled ? oldmc$lastGrid : loadTracker.statusView();
+        boolean full = oldmc$finishState().full();
+        ChunkLoadStatusView chunks = oldmc$lastGrid;
         if (chunks == null && !loadTracker.hasProgress() && !full) {
             // The separate receiving-terrain screen in 1.21.8 had only a title.
             return;
@@ -87,6 +86,6 @@ abstract class LevelLoadingScreenMixin {
 
     @Inject(method = RenderTargets.PROGRESS_BAR, at = @At("HEAD"), cancellable = true)
     private void oldmc$hideProgressBar(CallbackInfo callback) {
-        if (OldMCOptions.PERCENTAGE.enabled() || oldmc$terrainFrame) callback.cancel();
+        if (OldMCOptions.PERCENTAGE.enabled()) callback.cancel();
     }
 }

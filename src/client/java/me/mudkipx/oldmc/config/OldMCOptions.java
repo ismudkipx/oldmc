@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 public enum OldMCOptions {
-    PERCENTAGE("percentage"), TERRAIN("terrain"), GRID("grid"), DIRT_BACKGROUND("dirtBackground"), DEBUG("debug"), VERSION("version");
+    PERCENTAGE("percentage"), GRID("grid"), DIRT_BACKGROUND("dirtBackground"), DEBUG("debug"), VERSION("version");
 
     private static final Path FILE = FabricLoader.getInstance().getConfigDir().resolve("oldmc.json");
     private static boolean majorVersionFormat;
