@@ -3,8 +3,11 @@ package me.mudkipx.oldmc.config;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import me.mudkipx.oldmc.mixin.DebugProfileAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.SemanticVersion;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.debug.DebugScreenProfile;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -20,6 +23,9 @@ public enum OldMCOptions {
     private static final Path FILE = FabricLoader.getInstance().getConfigDir().resolve("oldmc.json");
     static final boolean DEFAULT_MAJOR_VERSION_FORMAT = true;
     private static boolean majorVersionFormat = DEFAULT_MAJOR_VERSION_FORMAT;
+    private static boolean dirty;
+    private static final boolean HAS_YEAR_VERSION = FabricLoader.getInstance().getModContainer("minecraft")
+            .orElseThrow().getMetadata().getVersion().getFriendlyString().startsWith("26.");
     public static final boolean HAS_PAUSE_MENU_ICONS = FabricLoader.getInstance().getModContainer("minecraft")
             .map(mod -> mod.getMetadata().getVersion())
             .filter(SemanticVersion.class::isInstance).map(SemanticVersion.class::cast)
@@ -45,7 +51,10 @@ public enum OldMCOptions {
     }
 
     static void setFriendPlacement(FriendButtonPlacement placement) {
-        friendPlacement = placement;
+        if (friendPlacement != placement) {
+            friendPlacement = placement;
+            dirty = true;
+        }
     }
 
     public static TitleFriendPlacement titleFriendPlacement() {
@@ -53,7 +62,10 @@ public enum OldMCOptions {
     }
 
     static void setTitleFriendPlacement(TitleFriendPlacement placement) {
-        titleFriendPlacement = placement;
+        if (titleFriendPlacement != placement) {
+            titleFriendPlacement = placement;
+            dirty = true;
+        }
     }
 
     public static boolean usesMajorVersionFormat() {
@@ -61,7 +73,18 @@ public enum OldMCOptions {
     }
 
     static void setMajorVersionFormat(boolean value) {
-        majorVersionFormat = value;
+        if (majorVersionFormat != value) {
+            majorVersionFormat = value;
+            dirty = true;
+        }
+    }
+
+    boolean available() {
+        return switch (this) {
+            case VERSION -> HAS_YEAR_VERSION;
+            case PAUSE_MENU_TEXT, TITLE_SIDE_BUTTONS -> HAS_PAUSE_MENU_ICONS;
+            default -> true;
+        };
     }
 
     public boolean enabled() {
@@ -69,7 +92,10 @@ public enum OldMCOptions {
     }
 
     void set(boolean value) {
-        enabled = value;
+        if (enabled != value) {
+            enabled = value;
+            dirty = true;
+        }
     }
 
     static {
@@ -100,7 +126,27 @@ public enum OldMCOptions {
         }
     }
 
-    static void save() {
+    static synchronized void applyChanges(Runnable edits) {
+        boolean debugBefore = DEBUG.enabled();
+        boolean versionBefore = VERSION.enabled();
+        boolean formatBefore = usesMajorVersionFormat();
+        edits.run();
+        if (!dirty) return;
+        saveIfDirty();
+        var client = Minecraft.getInstance();
+        if (debugBefore != DEBUG.enabled()) {
+            var entries = client.debugEntries;
+            if (entries.isUsingProfile(DebugScreenProfile.DEFAULT) && !DefaultDebugProfile.matches(entries)) {
+                // Vanilla saves named profiles by name only. Preserve these exact entries on restart.
+                ((DebugProfileAccessor) entries).oldmc$setProfile(null);
+                entries.save();
+            }
+        }
+        if (versionBefore != VERSION.enabled() || (formatBefore != usesMajorVersionFormat() && versionBefore)) client.updateTitle();
+    }
+
+    static synchronized void saveIfDirty() {
+        if (!dirty) return;
         var data = new JsonObject();
         data.addProperty("friendButtonPlacement", friendPlacement.key());
         data.addProperty("titleFriendButtonPlacement", titleFriendPlacement.key());
@@ -116,6 +162,7 @@ public enum OldMCOptions {
                 } catch (java.nio.file.AtomicMoveNotSupportedException e) {
                     Files.move(tmp, FILE, StandardCopyOption.REPLACE_EXISTING);
                 }
+                dirty = false;
             } finally {
                 Files.deleteIfExists(tmp);
             }

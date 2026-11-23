@@ -35,6 +35,10 @@ subprojects {
 
     repositories {
         maven {
+            url = 'https://repo.polyfrost.org/releases'
+            content { includeGroup 'org.polyfrost.oneconfig' }
+        }
+        maven {
             url = 'https://maven.caffeinemc.net/releases'
             content { includeModule 'net.caffeinemc', 'sodium-fabric-api' }
         }
@@ -44,6 +48,8 @@ subprojects {
         }
     }
     dependencies {
+        clientCompileOnly('org.polyfrost.oneconfig:config:1.9.3') { transitive = false }
+        clientCompileOnly('org.polyfrost.oneconfig:config-impl:1.9.3') { transitive = false }
         minecraft "com.mojang:minecraft:${minecraftVersion}"
         if (remapped) {
             modCompileOnly('net.caffeinemc:sodium-fabric-api:0.8.7+mc1.21.11') { transitive = false }

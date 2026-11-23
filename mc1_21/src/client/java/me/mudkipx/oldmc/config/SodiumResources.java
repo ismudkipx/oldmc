@@ -1,11 +1,11 @@
-package me.mudkipx.oldmc.compat.sodium;
+package me.mudkipx.oldmc.config;
 
 import net.caffeinemc.mods.sodium.api.config.structure.ModOptionsBuilder;
 import net.minecraft.resources.ResourceLocation;
 
-final class SodiumIcon {
-    static void apply(ModOptionsBuilder mod) {
-        var icon = ResourceLocation.fromNamespaceAndPath("oldmc", "textures/gui/icon.png");
+final class SodiumResources {
+    static void setIcon(ModOptionsBuilder mod) {
+        var icon = id("textures/gui/icon.png");
         try {
             mod.setNonTintedIcon(icon);
         } catch (NoSuchMethodError missingColorIconApi) {
@@ -14,5 +14,9 @@ final class SodiumIcon {
         }
     }
 
-    private SodiumIcon() {}
+    static ResourceLocation id(String path) {
+        return ResourceLocation.fromNamespaceAndPath("oldmc", path);
+    }
+
+    private SodiumResources() {}
 }

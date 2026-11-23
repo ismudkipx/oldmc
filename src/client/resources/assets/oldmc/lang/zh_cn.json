@@ -1,5 +1,9 @@
 {
   "oldmc.settings": "OldMC 设置",
+  "oldmc.search": "搜索…",
+  "oldmc.category.world": "世界",
+  "oldmc.category.general": "通用",
+  "oldmc.category.menus": "菜单与屏幕",
   "oldmc.option.percentage": "世界加载百分比",
   "oldmc.option.grid": "旧版加载区块图大小",
   "oldmc.option.debug": "旧版 F3 布局",
@@ -29,7 +33,7 @@
   "oldmc.option.removePlayerReporting": "移除“举报玩家”",
   "oldmc.option.removePlayerReporting.tooltip": "从暂停菜单中移除“举报玩家”按钮。",
   "oldmc.option.titleSideButtons": "恢复旧版标题屏幕按钮布局",
-  "oldmc.option.titleSideButtons.tooltip": "将语言按钮放回“选项…”左侧，辅助功能按钮放回“退出游戏”右侧，与 26.1 一致。",
+  "oldmc.option.titleSideButtons.tooltip": "将语言按钮放回“选项…”左侧，辅助功能按钮放回“退出游戏”右侧，与 26.1 及先前版本一致。",
   "oldmc.option.titleFriendButtonPlacement": "标题屏幕好友按钮位置",
   "oldmc.option.titleFriendButtonPlacement.tooltip": "设置标题屏幕上好友按钮的位置，或隐藏好友按钮。\n需要启用“恢复旧版标题屏幕按钮布局”。",
   "oldmc.placement.icon_left": "在 Realms 左侧显示为图标",

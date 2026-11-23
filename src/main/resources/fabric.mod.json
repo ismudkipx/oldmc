@@ -22,11 +22,14 @@
     "java": ">=${java}"
   },
   "entrypoints": {
+    "oneconfig:config": [
+      "me.mudkipx.oldmc.config.OldMCOneConfig"
+    ],
     "modmenu": [
       "me.mudkipx.oldmc.config.OldMCModMenu"
     ],
     "sodium:config_api_user": [
-      "me.mudkipx.oldmc.compat.sodium.OldMCSodiumConfig"
+      "me.mudkipx.oldmc.config.OldMCSodiumConfig"
     ]
   }
 }
