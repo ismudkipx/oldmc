@@ -1,0 +1,19 @@
+{
+  "oldmc.settings": "OldMC 设置",
+  "oldmc.option.percentage": "世界加载百分比",
+  "oldmc.option.terrain": "加载完成后显示“加载地形中”",
+  "oldmc.option.grid": "旧版加载区块图大小",
+  "oldmc.option.debug": "旧版 F3 布局",
+  "oldmc.option.version": "旧版游戏版本号",
+  "oldmc.option.versionFormat": "版本号格式：%s",
+  "oldmc.format.year": "年份更新格式",
+  "oldmc.format.major": "大版本更新格式",
+  "oldmc.option.percentage.tooltip": "在区块图上方显示世界加载百分比，并隐藏进度条。",
+  "oldmc.option.terrain.tooltip": "世界加载到 100% 后显示“加载地形中…”。",
+  "oldmc.option.grid.tooltip": "使用 1.21.8 默认的 29×29 格区块图。",
+  "oldmc.option.debug.tooltip": "按 1.21.8 的布局排列 F3 信息。在 F3+F6 中点击“默认配置”即可应用对应的默认条目。",
+  "oldmc.option.version.tooltip": "在客户端显示旧式版本号。连接服务器时仍使用实际游戏版本。",
+  "oldmc.option.versionFormat.tooltip": "如果选择大版本更新格式，则会Minecraft先前大更新版本形式。26.1会是1.22，26.1.x会是1.22.x。26.2会是1.23。\n选择年份更新格式，26.1则会是1.26，26.1.1则会是1.26.1，26.1.2会是1.26.2。以此类推，26.2会是1.26.3。\n需要启用“旧版游戏版本号”。",
+  "oldmc.option.dirtBackground": "泥土背景",
+  "oldmc.option.dirtBackground.tooltip": "恢复 1.20.4 及先前版本的泥土背景。"
+}

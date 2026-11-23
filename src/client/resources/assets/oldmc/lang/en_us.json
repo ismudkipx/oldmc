@@ -1,0 +1,19 @@
+{
+  "oldmc.settings": "OldMC Settings",
+  "oldmc.option.percentage": "World loading percentage",
+  "oldmc.option.terrain": "Receiving terrain after loading",
+  "oldmc.option.grid": "Classic loading grid size",
+  "oldmc.option.debug": "Classic F3 layout",
+  "oldmc.option.version": "Classic version numbers",
+  "oldmc.option.versionFormat": "Version number format: %s",
+  "oldmc.format.year": "Year-based update format",
+  "oldmc.format.major": "Major update format",
+  "oldmc.option.percentage.tooltip": "Show the world loading percentage above the chunk grid and hide the progress bar.",
+  "oldmc.option.terrain.tooltip": "Show “Loading terrain…” after world loading reaches 100%.",
+  "oldmc.option.grid.tooltip": "Use the default 29×29 chunk grid from 1.21.8.",
+  "oldmc.option.debug.tooltip": "Arrange F3 information as in 1.21.8. Select the default profile in F3+F6 to apply its entries.",
+  "oldmc.option.version.tooltip": "Display classic version numbers in the client. Server connections use the actual game version.",
+  "oldmc.option.versionFormat.tooltip": "Major update format follows Minecraft’s earlier numbering: 26.1 becomes 1.22, 26.1.x becomes 1.22.x, and 26.2 becomes 1.23.\nYear-based update format counts each update in order: 26.1 becomes 1.26, 26.1.1 becomes 1.26.1, 26.1.2 becomes 1.26.2, and 26.2 becomes 1.26.3.\nRequires “Classic version numbers”.",
+  "oldmc.option.dirtBackground": "Dirt background",
+  "oldmc.option.dirtBackground.tooltip": "Restore the dirt background from Minecraft 1.20.4 and earlier."
+}

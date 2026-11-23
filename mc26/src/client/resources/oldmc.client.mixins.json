@@ -1,0 +1,29 @@
+{
+  "required": true,
+  "package": "me.mudkipx.oldmc.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "LevelLoadingScreenMixin",
+    "DebugEntryListMixin",
+    "DebugProfileAccessor",
+    "DebugOptionsScreenMixin",
+    "DebugScreenOverlayMixin",
+    "VideoSettingsMixin",
+    "OptionTooltipMixin",
+    "LoadingBackgroundMixin",
+    "MenuBackgroundMixin",
+    "ListBackgroundMixin",
+    "GenericMessageScreenMixin",
+    "LoadingGridMixin",
+    "WindowVersionMixin",
+    "TitleVersionMixin",
+    "DebugVersionMixin",
+    "WorldWarningVersionMixin",
+    "WorldListVersionMixin",
+    "RealmsVersionMixin",
+    "RealmsOutdatedVersionMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

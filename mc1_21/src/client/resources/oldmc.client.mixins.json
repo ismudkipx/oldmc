@@ -1,0 +1,22 @@
+{
+  "required": true,
+  "package": "me.mudkipx.oldmc.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "LevelLoadingScreenMixin",
+    "DebugEntryListMixin",
+    "DebugProfileAccessor",
+    "DebugOptionsScreenMixin",
+    "DebugScreenOverlayMixin",
+    "VideoSettingsMixin",
+    "OptionTooltipMixin",
+    "LoadingBackgroundMixin",
+    "MenuBackgroundMixin",
+    "ListBackgroundMixin",
+    "GenericMessageScreenMixin",
+    "LoadingGridMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

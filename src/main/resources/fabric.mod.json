@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "oldmc",
+  "version": "${version}",
+  "name": "OldMC",
+  "description": "Restores the classic Minecraft experience.",
+  "authors": [
+    "smalldayDC_"
+  ],
+  "environment": "client",
+  "license": "MIT",
+  "icon": "icon.png",
+  "mixins": [
+    {
+      "config": "oldmc.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader}",
+    "minecraft": "${minecraft}",
+    "java": ">=${java}"
+  },
+  "entrypoints": {
+    "modmenu": [
+      "me.mudkipx.oldmc.config.OldMCModMenu"
+    ],
+    "sodium:config_api_user": [
+      "me.mudkipx.oldmc.compat.sodium.OldMCSodiumConfig"
+    ]
+  }
+}

@@ -1,0 +1,94 @@
+plugins {
+    id 'base'
+    id 'net.fabricmc.fabric-loom-remap' version "${loom_version}" apply false
+    id 'net.fabricmc.fabric-loom' version "${loom_version}" apply false
+}
+
+subprojects {
+    def remapped = project.name == 'mc1_21'
+    def minecraftVersion = remapped ? '1.21.9' : '26.1'
+    def minecraftRange = remapped ? '>=1.21.9 <=1.21.11' : '>=26.1 <=26.3'
+    def versionLabel = remapped ? '1.21.9-1.21.11' : '26.1-26.3'
+    def javaRelease = remapped ? 21 : 25
+
+    apply plugin: (remapped ? 'net.fabricmc.fabric-loom-remap' : 'net.fabricmc.fabric-loom')
+
+    group = maven_group
+    version = "${mod_version}+mc${versionLabel}"
+    base.archivesName = 'oldmc'
+
+    loom {
+        splitEnvironmentSourceSets()
+        mods {
+            oldmc {
+                sourceSet sourceSets.main
+                sourceSet sourceSets.client
+            }
+        }
+    }
+
+    sourceSets {
+        main.resources.srcDir(rootProject.file('src/main/resources'))
+        client.java.srcDir(rootProject.file('src/client/java'))
+        client.resources.srcDir(rootProject.file('src/client/resources'))
+    }
+
+    repositories {
+        maven {
+            url = 'https://maven.caffeinemc.net/releases'
+            content { includeModule 'net.caffeinemc', 'sodium-fabric-api' }
+        }
+        maven {
+            url = 'https://maven.terraformersmc.com/releases/'
+            content { includeGroup 'com.terraformersmc' }
+        }
+    }
+    dependencies {
+        minecraft "com.mojang:minecraft:${minecraftVersion}"
+        if (remapped) {
+            modCompileOnly('net.caffeinemc:sodium-fabric-api:0.8.7+mc1.21.11') { transitive = false }
+            modCompileOnly('com.terraformersmc:modmenu:16.0.1') { transitive = false }
+            mappings loom.officialMojangMappings()
+            modImplementation "net.fabricmc:fabric-loader:${loader_version}"
+        } else {
+            compileOnly('net.caffeinemc:sodium-fabric-api:0.8.7+mc26.1') { transitive = false }
+            compileOnly('com.terraformersmc:modmenu:18.0.0') { transitive = false }
+            implementation "net.fabricmc:fabric-loader:${loader_version}"
+        }
+    }
+
+    def metadata = [
+        version: project.version.toString(),
+        loader: loader_version,
+        minecraft: minecraftRange,
+        java: javaRelease
+    ]
+    tasks.named('processResources') {
+        from(rootProject.file('src/main/resources/icon.png')) { into 'assets/oldmc/textures/gui' }
+        inputs.properties(metadata)
+        filesMatching('fabric.mod.json') { expand(metadata) }
+    }
+    java {
+        sourceCompatibility = JavaVersion.toVersion(javaRelease)
+        targetCompatibility = JavaVersion.toVersion(javaRelease)
+        withSourcesJar()
+    }
+    tasks.withType(JavaCompile).configureEach {
+        options.release = javaRelease
+    }
+    tasks.named('jar') {
+        from(rootProject.file('LICENSE')) { rename { 'LICENSE_oldmc' } }
+    }
+
+    // Only installable mod jars go to the root build/libs directory.
+    tasks.named(remapped ? 'remapJar' : 'jar') {
+        destinationDirectory = rootProject.layout.buildDirectory.dir('libs')
+    }
+}
+
+tasks.named('assemble') {
+    dependsOn ':mc1_21:assemble', ':mc26:assemble'
+}
+tasks.named('check') {
+    dependsOn ':mc1_21:check', ':mc26:check'
+}
