@@ -21,6 +21,7 @@
     "GenericMessageScreenMixin",
     "LoadingGridMixin",
     "WindowVersionMixin",
+    "TitleMenuMixin",
     "TitleVersionMixin",
     "DebugVersionMixin",
     "WorldWarningVersionMixin",

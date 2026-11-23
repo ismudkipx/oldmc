@@ -19,6 +19,7 @@ public final class OldMCSettingsScreen extends OptionsSubScreen {
 
     private OldMCOptionList rows;
     private FriendButtonPlacement friendPlacement = OldMCOptions.friendPlacement();
+    private TitleFriendPlacement titlePlacement = OldMCOptions.titleFriendPlacement();
     private boolean majorVersionFormat = OldMCOptions.usesMajorVersionFormat();
 
     public OldMCSettingsScreen(Screen parent) {
@@ -27,7 +28,8 @@ public final class OldMCSettingsScreen extends OptionsSubScreen {
                 .getMetadata().getVersion().getFriendlyString();
         for (var option : OldMCOptions.values()) {
             if (option == OldMCOptions.VERSION && !gameVersion.startsWith("26.")) continue;
-            if (option == OldMCOptions.PAUSE_MENU_TEXT && !OldMCOptions.HAS_PAUSE_MENU_ICONS) continue;
+            if (!OldMCOptions.HAS_PAUSE_MENU_ICONS
+                    && (option == OldMCOptions.PAUSE_MENU_TEXT || option == OldMCOptions.TITLE_SIDE_BUTTONS)) continue;
             String key = "oldmc.option." + option.key;
             var control = OptionInstance.createBoolean(key,
                     OptionInstance.cachedConstantTooltip(Component.translatable(key + ".tooltip")), option.defaultValue);
@@ -59,6 +61,7 @@ public final class OldMCSettingsScreen extends OptionsSubScreen {
                         control.set(option.defaultValue);
                         toggle.setValue(option.defaultValue);
                     });
+            if (option == OldMCOptions.TITLE_SIDE_BUTTONS) addTitleFriendPlacement();
             if (option == OldMCOptions.PAUSE_MENU_TEXT) addFriendPlacement();
         });
         if (controls.containsKey(OldMCOptions.VERSION)) {
@@ -68,11 +71,29 @@ public final class OldMCSettingsScreen extends OptionsSubScreen {
             }).width(OldMCOptionList.VALUE_WIDTH).build();
             button.setTooltip(Tooltip.create(Component.translatable("oldmc.option.versionFormat.tooltip")));
             rows.addOption(button, Component.translatable("oldmc.versionFormat.name"),
-                    () -> majorVersionFormat, () -> {
-                        majorVersionFormat = false;
+                    () -> majorVersionFormat != OldMCOptions.DEFAULT_MAJOR_VERSION_FORMAT, () -> {
+                        majorVersionFormat = OldMCOptions.DEFAULT_MAJOR_VERSION_FORMAT;
                         button.setMessage(formatLabel());
                     });
         }
+    }
+
+    private void addTitleFriendPlacement() {
+        var name = Component.translatable("oldmc.option.titleFriendButtonPlacement");
+        var button = Button.builder(titlePlacementLabel(name), clicked -> {
+            titlePlacement = titlePlacement.next();
+            clicked.setMessage(titlePlacementLabel(name));
+        }).width(OldMCOptionList.VALUE_WIDTH).build();
+        button.setTooltip(Tooltip.create(Component.translatable("oldmc.option.titleFriendButtonPlacement.tooltip")));
+        rows.addOption(button, name, () -> titlePlacement != TitleFriendPlacement.DEFAULT, () -> {
+            titlePlacement = TitleFriendPlacement.DEFAULT;
+            button.setMessage(titlePlacementLabel(name));
+        });
+    }
+
+    private Component titlePlacementLabel(Component name) {
+        return Component.translatable("options.generic_value", name,
+                Component.translatable("oldmc.placement." + titlePlacement.key()));
     }
 
     private void addFriendPlacement() {
@@ -80,25 +101,17 @@ public final class OldMCSettingsScreen extends OptionsSubScreen {
         var button = Button.builder(friendPlacementLabel(name), clicked -> {
             friendPlacement = friendPlacement.next();
             clicked.setMessage(friendPlacementLabel(name));
-            clicked.setTooltip(friendPlacementTooltip());
         }).width(OldMCOptionList.VALUE_WIDTH).build();
-        button.setTooltip(friendPlacementTooltip());
-        rows.addOption(button, name, () -> friendPlacement != FriendButtonPlacement.FULL_ROW, () -> {
-            friendPlacement = FriendButtonPlacement.FULL_ROW;
+        button.setTooltip(Tooltip.create(Component.translatable("oldmc.option.friendButtonPlacement.tooltip")));
+        rows.addOption(button, name, () -> friendPlacement != FriendButtonPlacement.DEFAULT, () -> {
+            friendPlacement = FriendButtonPlacement.DEFAULT;
             button.setMessage(friendPlacementLabel(name));
-            button.setTooltip(friendPlacementTooltip());
         });
     }
 
     private Component friendPlacementLabel(Component name) {
         return Component.translatable("options.generic_value", name,
                 Component.translatable("oldmc.placement." + friendPlacement.key()));
-    }
-
-    private Tooltip friendPlacementTooltip() {
-        String key = friendPlacement == FriendButtonPlacement.UNCHANGED
-                ? "oldmc.option.friendButtonUnchanged.tooltip" : "oldmc.option.friendButtonPlacement.tooltip";
-        return Tooltip.create(Component.translatable(key));
     }
 
     private Component formatLabel() {
@@ -124,6 +137,10 @@ public final class OldMCSettingsScreen extends OptionsSubScreen {
         if (formatChanged) OldMCOptions.setMajorVersionFormat(majorVersionFormat);
         if (friendPlacement != OldMCOptions.friendPlacement()) {
             OldMCOptions.setFriendPlacement(friendPlacement);
+            changed = true;
+        }
+        if (titlePlacement != OldMCOptions.titleFriendPlacement()) {
+            OldMCOptions.setTitleFriendPlacement(titlePlacement);
             changed = true;
         }
         if (changed || formatChanged) OldMCOptions.save();

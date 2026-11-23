@@ -16,7 +16,7 @@ abstract class OptionTooltipMixin {
     private static int oldmc$optionTooltipWidth(FormattedText text, int width) {
         if (text instanceof Component message && message.getContents() instanceof TranslatableContents translation) {
             String key = translation.getKey();
-            if (key.startsWith("oldmc.option.") && key.endsWith(".tooltip")) {
+            if (key.equals("oldmc.resetOption") || (key.startsWith("oldmc.option.") && key.endsWith(".tooltip"))) {
                 return Integer.MAX_VALUE;
             }
         }

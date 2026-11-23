@@ -14,17 +14,19 @@ import java.nio.file.StandardCopyOption;
 
 public enum OldMCOptions {
     PERCENTAGE("percentage"), GRID("grid"), DIRT_BACKGROUND("dirtBackground"), DEBUG("debug"),
-    PAUSE_MENU_TEXT("pauseMenuText"), REMOVE_FEEDBACK("removeFeedback", false),
-    REMOVE_PLAYER_REPORTING("removePlayerReporting", false), VERSION("version");
+    TITLE_SIDE_BUTTONS("titleSideButtons"), PAUSE_MENU_TEXT("pauseMenuText"), REMOVE_FEEDBACK("removeFeedback"),
+    REMOVE_PLAYER_REPORTING("removePlayerReporting"), VERSION("version");
 
     private static final Path FILE = FabricLoader.getInstance().getConfigDir().resolve("oldmc.json");
-    private static boolean majorVersionFormat;
+    static final boolean DEFAULT_MAJOR_VERSION_FORMAT = true;
+    private static boolean majorVersionFormat = DEFAULT_MAJOR_VERSION_FORMAT;
     public static final boolean HAS_PAUSE_MENU_ICONS = FabricLoader.getInstance().getModContainer("minecraft")
             .map(mod -> mod.getMetadata().getVersion())
             .filter(SemanticVersion.class::isInstance).map(SemanticVersion.class::cast)
             .map(v -> v.getVersionComponent(0) > 26 || v.getVersionComponent(0) == 26 && v.getVersionComponent(1) >= 2)
             .orElse(false);
-    private static FriendButtonPlacement friendPlacement = FriendButtonPlacement.FULL_ROW;
+    private static FriendButtonPlacement friendPlacement = FriendButtonPlacement.DEFAULT;
+    private static TitleFriendPlacement titleFriendPlacement = TitleFriendPlacement.DEFAULT;
     public final String key;
     public final boolean defaultValue;
     private boolean enabled;
@@ -44,6 +46,14 @@ public enum OldMCOptions {
 
     static void setFriendPlacement(FriendButtonPlacement placement) {
         friendPlacement = placement;
+    }
+
+    public static TitleFriendPlacement titleFriendPlacement() {
+        return titleFriendPlacement;
+    }
+
+    static void setTitleFriendPlacement(TitleFriendPlacement placement) {
+        titleFriendPlacement = placement;
     }
 
     public static boolean usesMajorVersionFormat() {
@@ -70,6 +80,10 @@ public enum OldMCOptions {
                 if (placement != null && placement.isJsonPrimitive() && placement.getAsJsonPrimitive().isString()) {
                     friendPlacement = FriendButtonPlacement.fromKey(placement.getAsString());
                 }
+                var titlePlacement = data.get("titleFriendButtonPlacement");
+                if (titlePlacement != null && titlePlacement.isJsonPrimitive() && titlePlacement.getAsJsonPrimitive().isString()) {
+                    titleFriendPlacement = TitleFriendPlacement.fromKey(titlePlacement.getAsString());
+                }
                 var format = data.get("majorVersionFormat");
                 if (format != null && format.isJsonPrimitive() && format.getAsJsonPrimitive().isBoolean()) {
                     majorVersionFormat = format.getAsBoolean();
@@ -89,6 +103,7 @@ public enum OldMCOptions {
     static void save() {
         var data = new JsonObject();
         data.addProperty("friendButtonPlacement", friendPlacement.key());
+        data.addProperty("titleFriendButtonPlacement", titleFriendPlacement.key());
         data.addProperty("majorVersionFormat", majorVersionFormat);
         for (var option : values()) data.addProperty(option.key, option.enabled);
         try {
