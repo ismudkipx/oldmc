@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.SemanticVersion;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -12,15 +13,37 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 public enum OldMCOptions {
-    PERCENTAGE("percentage"), GRID("grid"), DIRT_BACKGROUND("dirtBackground"), DEBUG("debug"), VERSION("version");
+    PERCENTAGE("percentage"), GRID("grid"), DIRT_BACKGROUND("dirtBackground"), DEBUG("debug"),
+    PAUSE_MENU_TEXT("pauseMenuText"), REMOVE_FEEDBACK("removeFeedback", false),
+    REMOVE_PLAYER_REPORTING("removePlayerReporting", false), VERSION("version");
 
     private static final Path FILE = FabricLoader.getInstance().getConfigDir().resolve("oldmc.json");
     private static boolean majorVersionFormat;
+    public static final boolean HAS_PAUSE_MENU_ICONS = FabricLoader.getInstance().getModContainer("minecraft")
+            .map(mod -> mod.getMetadata().getVersion())
+            .filter(SemanticVersion.class::isInstance).map(SemanticVersion.class::cast)
+            .map(v -> v.getVersionComponent(0) > 26 || v.getVersionComponent(0) == 26 && v.getVersionComponent(1) >= 2)
+            .orElse(false);
+    private static FriendButtonPlacement friendPlacement = FriendButtonPlacement.FULL_ROW;
     public final String key;
-    private boolean enabled = true;
+    public final boolean defaultValue;
+    private boolean enabled;
 
     OldMCOptions(String key) {
+        this(key, true);
+    }
+
+    OldMCOptions(String key, boolean defaultValue) {
         this.key = key;
+        this.enabled = this.defaultValue = defaultValue;
+    }
+
+    public static FriendButtonPlacement friendPlacement() {
+        return friendPlacement;
+    }
+
+    static void setFriendPlacement(FriendButtonPlacement placement) {
+        friendPlacement = placement;
     }
 
     public static boolean usesMajorVersionFormat() {
@@ -43,6 +66,10 @@ public enum OldMCOptions {
         if (Files.isRegularFile(FILE)) {
             try (var reader = Files.newBufferedReader(FILE)) {
                 var data = JsonParser.parseReader(reader).getAsJsonObject();
+                var placement = data.get("friendButtonPlacement");
+                if (placement != null && placement.isJsonPrimitive() && placement.getAsJsonPrimitive().isString()) {
+                    friendPlacement = FriendButtonPlacement.fromKey(placement.getAsString());
+                }
                 var format = data.get("majorVersionFormat");
                 if (format != null && format.isJsonPrimitive() && format.getAsJsonPrimitive().isBoolean()) {
                     majorVersionFormat = format.getAsBoolean();
@@ -61,6 +88,7 @@ public enum OldMCOptions {
 
     static void save() {
         var data = new JsonObject();
+        data.addProperty("friendButtonPlacement", friendPlacement.key());
         data.addProperty("majorVersionFormat", majorVersionFormat);
         for (var option : values()) data.addProperty(option.key, option.enabled);
         try {

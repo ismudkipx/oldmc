@@ -18,6 +18,7 @@ public final class OldMCSettingsScreen extends OptionsSubScreen {
     private final EnumMap<OldMCOptions, OptionInstance<Boolean>> controls = new EnumMap<>(OldMCOptions.class);
 
     private OldMCOptionList rows;
+    private FriendButtonPlacement friendPlacement = OldMCOptions.friendPlacement();
     private boolean majorVersionFormat = OldMCOptions.usesMajorVersionFormat();
 
     public OldMCSettingsScreen(Screen parent) {
@@ -26,9 +27,10 @@ public final class OldMCSettingsScreen extends OptionsSubScreen {
                 .getMetadata().getVersion().getFriendlyString();
         for (var option : OldMCOptions.values()) {
             if (option == OldMCOptions.VERSION && !gameVersion.startsWith("26.")) continue;
+            if (option == OldMCOptions.PAUSE_MENU_TEXT && !OldMCOptions.HAS_PAUSE_MENU_ICONS) continue;
             String key = "oldmc.option." + option.key;
             var control = OptionInstance.createBoolean(key,
-                    OptionInstance.cachedConstantTooltip(Component.translatable(key + ".tooltip")), true);
+                    OptionInstance.cachedConstantTooltip(Component.translatable(key + ".tooltip")), option.defaultValue);
             control.set(option.enabled());
             controls.put(option, control);
         }
@@ -53,10 +55,11 @@ public final class OldMCSettingsScreen extends OptionsSubScreen {
             @SuppressWarnings("unchecked")
             var toggle = (CycleButton<Boolean>) control.createButton(options, 0, 0, OldMCOptionList.VALUE_WIDTH);
             rows.addOption(toggle, Component.translatable("oldmc.option." + option.key),
-                    () -> !control.get(), () -> {
-                        control.set(true);
-                        toggle.setValue(true);
+                    () -> control.get() != option.defaultValue, () -> {
+                        control.set(option.defaultValue);
+                        toggle.setValue(option.defaultValue);
                     });
+            if (option == OldMCOptions.PAUSE_MENU_TEXT) addFriendPlacement();
         });
         if (controls.containsKey(OldMCOptions.VERSION)) {
             var button = Button.builder(formatLabel(), clicked -> {
@@ -70,6 +73,32 @@ public final class OldMCSettingsScreen extends OptionsSubScreen {
                         button.setMessage(formatLabel());
                     });
         }
+    }
+
+    private void addFriendPlacement() {
+        var name = Component.translatable("oldmc.option.friendButtonPlacement");
+        var button = Button.builder(friendPlacementLabel(name), clicked -> {
+            friendPlacement = friendPlacement.next();
+            clicked.setMessage(friendPlacementLabel(name));
+            clicked.setTooltip(friendPlacementTooltip());
+        }).width(OldMCOptionList.VALUE_WIDTH).build();
+        button.setTooltip(friendPlacementTooltip());
+        rows.addOption(button, name, () -> friendPlacement != FriendButtonPlacement.FULL_ROW, () -> {
+            friendPlacement = FriendButtonPlacement.FULL_ROW;
+            button.setMessage(friendPlacementLabel(name));
+            button.setTooltip(friendPlacementTooltip());
+        });
+    }
+
+    private Component friendPlacementLabel(Component name) {
+        return Component.translatable("options.generic_value", name,
+                Component.translatable("oldmc.placement." + friendPlacement.key()));
+    }
+
+    private Tooltip friendPlacementTooltip() {
+        String key = friendPlacement == FriendButtonPlacement.UNCHANGED
+                ? "oldmc.option.friendButtonUnchanged.tooltip" : "oldmc.option.friendButtonPlacement.tooltip";
+        return Tooltip.create(Component.translatable(key));
     }
 
     private Component formatLabel() {
@@ -93,6 +122,10 @@ public final class OldMCSettingsScreen extends OptionsSubScreen {
         boolean formatChanged = controls.containsKey(OldMCOptions.VERSION)
                 && majorVersionFormat != OldMCOptions.usesMajorVersionFormat();
         if (formatChanged) OldMCOptions.setMajorVersionFormat(majorVersionFormat);
+        if (friendPlacement != OldMCOptions.friendPlacement()) {
+            OldMCOptions.setFriendPlacement(friendPlacement);
+            changed = true;
+        }
         if (changed || formatChanged) OldMCOptions.save();
         var client = Minecraft.getInstance();
         if (debugBefore != OldMCOptions.DEBUG.enabled()) {

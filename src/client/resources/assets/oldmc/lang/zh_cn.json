@@ -15,5 +15,18 @@
   "oldmc.option.dirtBackground": "泥土背景",
   "oldmc.option.dirtBackground.tooltip": "恢复 1.20.4 及先前版本的泥土背景。",
   "oldmc.resetOption": "将“%s”恢复为默认值",
-  "oldmc.versionFormat.name": "版本号格式"
+  "oldmc.versionFormat.name": "版本号格式",
+  "oldmc.option.pauseMenuText": "暂停菜单纯文字按钮",
+  "oldmc.option.pauseMenuText.tooltip": "将暂停菜单中的图标恢复成纯文字按钮。",
+  "oldmc.option.friendButtonPlacement": "好友按钮位置",
+  "oldmc.option.friendButtonPlacement.tooltip": "选择纯文字模式下好友按钮的位置。“隐藏好友按钮”在图标和纯文字模式下都生效。",
+  "oldmc.placement.full_row": "独占一整行",
+  "oldmc.placement.replace_bugs": "替换“报告漏洞”",
+  "oldmc.placement.hidden": "隐藏好友按钮",
+  "oldmc.placement.unchanged": "保持不变",
+  "oldmc.option.friendButtonUnchanged.tooltip": "保持现有的好友按钮位置不变。",
+  "oldmc.option.removeFeedback": "移除“报告漏洞”和“提交反馈”",
+  "oldmc.option.removeFeedback.tooltip": "从暂停菜单移除“报告漏洞”和“提交反馈”。",
+  "oldmc.option.removePlayerReporting": "移除“举报玩家”",
+  "oldmc.option.removePlayerReporting.tooltip": "从暂停菜单中移除“举报玩家”按钮。"
 }

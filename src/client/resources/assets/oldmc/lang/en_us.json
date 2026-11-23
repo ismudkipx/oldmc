@@ -15,5 +15,18 @@
   "oldmc.option.dirtBackground": "Dirt background",
   "oldmc.option.dirtBackground.tooltip": "Restore the dirt background from Minecraft 1.20.4 and earlier.",
   "oldmc.resetOption": "Reset %s to default",
-  "oldmc.versionFormat.name": "Version number format"
+  "oldmc.versionFormat.name": "Version number format",
+  "oldmc.option.pauseMenuText": "Text-only pause menu buttons",
+  "oldmc.option.pauseMenuText.tooltip": "Show the pause menu icon row as text buttons.",
+  "oldmc.option.friendButtonPlacement": "Friends button placement",
+  "oldmc.option.friendButtonPlacement.tooltip": "Choose the position of the Friends button in text mode. Hide Friends button applies in both icon and text modes.",
+  "oldmc.placement.full_row": "Full row",
+  "oldmc.placement.replace_bugs": "Replace Report Bugs",
+  "oldmc.placement.hidden": "Hide Friends button",
+  "oldmc.placement.unchanged": "Keep unchanged",
+  "oldmc.option.friendButtonUnchanged.tooltip": "Keep the Friends button in its current position.",
+  "oldmc.option.removeFeedback": "Remove “Report Bugs” and “Give Feedback”",
+  "oldmc.option.removeFeedback.tooltip": "Remove both buttons from the pause menu.",
+  "oldmc.option.removePlayerReporting": "Remove “Player Reporting”",
+  "oldmc.option.removePlayerReporting.tooltip": "Remove the “Player Reporting” button from the pause menu."
 }

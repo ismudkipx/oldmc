@@ -15,5 +15,18 @@
   "oldmc.option.dirtBackground": "泥土背景",
   "oldmc.option.dirtBackground.tooltip": "還原 1.20.4 及更早版本的泥土背景。",
   "oldmc.resetOption": "將「%s」恢復為預設值",
-  "oldmc.versionFormat.name": "版本號格式"
+  "oldmc.versionFormat.name": "版本號格式",
+  "oldmc.option.pauseMenuText": "暫停選單純文字按鈕",
+  "oldmc.option.pauseMenuText.tooltip": "將暫停選單中的圖示恢復為純文字按鈕。",
+  "oldmc.option.friendButtonPlacement": "好友按鈕位置",
+  "oldmc.option.friendButtonPlacement.tooltip": "選擇純文字模式下好友按鈕的位置。「隱藏好友按鈕」在圖示與純文字模式下皆生效。",
+  "oldmc.placement.full_row": "獨佔一整列",
+  "oldmc.placement.replace_bugs": "取代「回報錯誤」",
+  "oldmc.placement.hidden": "隱藏好友按鈕",
+  "oldmc.placement.unchanged": "保持不變",
+  "oldmc.option.friendButtonUnchanged.tooltip": "保持現有的好友按鈕位置不變。",
+  "oldmc.option.removeFeedback": "移除「回報錯誤」和「提交意見」",
+  "oldmc.option.removeFeedback.tooltip": "從暫停選單移除「回報錯誤」和「提交意見」。",
+  "oldmc.option.removePlayerReporting": "移除「檢舉玩家」",
+  "oldmc.option.removePlayerReporting.tooltip": "從暫停選單中移除「檢舉玩家」按鈕。"
 }

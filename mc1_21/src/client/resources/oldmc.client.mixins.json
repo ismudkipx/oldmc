@@ -9,6 +9,7 @@
     "DebugOptionsScreenMixin",
     "DebugScreenOverlayMixin",
     "VideoSettingsMixin",
+    "PauseFeedbackMixin",
     "OptionTooltipMixin",
     "LoadingBackgroundMixin",
     "MenuBackgroundMixin",
