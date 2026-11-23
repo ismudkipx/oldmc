@@ -38,6 +38,22 @@ public final class OldMCSodiumConfig implements ConfigEntryPoint {
         var general = page(builder, "general");
         addToggle(builder, general, OldMCOptions.DIRT_BACKGROUND);
         addToggle(builder, general, OldMCOptions.DEBUG);
+        addToggle(builder, general, OldMCOptions.SODIUM_F3_RIGHT);
+        if (OldMCOptions.SODIUM_F3_VERSION.available()) {
+            addToggle(builder, general, OldMCOptions.SODIUM_F3_VERSION);
+        }
+        if (OldMCOptions.IMMEDIATELY_FAST_F3_RIGHT.available()) {
+            addToggle(builder, general, OldMCOptions.IMMEDIATELY_FAST_F3_RIGHT);
+        }
+        if (OldMCOptions.IMMEDIATELY_FAST_F3_VERSION.available()) {
+            addToggle(builder, general, OldMCOptions.IMMEDIATELY_FAST_F3_VERSION);
+        }
+        if (OldMCOptions.IRIS_F3_RIGHT.available()) {
+            addToggle(builder, general, OldMCOptions.IRIS_F3_RIGHT);
+        }
+        if (OldMCOptions.IRIS_F3_VERSION.available()) {
+            addToggle(builder, general, OldMCOptions.IRIS_F3_VERSION);
+        }
         if (OldMCOptions.VERSION.available()) {
             addToggle(builder, general, OldMCOptions.VERSION);
             addChoice(builder, general, "version_format", "oldmc.versionFormat.name", "oldmc.option.versionFormat.tooltip",

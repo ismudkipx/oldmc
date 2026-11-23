@@ -7,7 +7,7 @@ import java.util.Map;
 
 import static me.mudkipx.oldmc.debug.DebugItem.*;
 
-/** Arranges only the lines actually emitted by the active vanilla entries in this frame. */
+/** Arranges the lines emitted by active entries in this frame. */
 public final class ClassicDebugLayout {
     private final Map<DebugItem, List<String>> rows = new EnumMap<>(DebugItem.class);
 
@@ -26,14 +26,19 @@ public final class ClassicDebugLayout {
         } else {
             addSystemInformation(result);
         }
-        if (result.isEmpty()) {
-            return vanillaLines;
-        }
+        boolean hasRightFooter = !left && !(lines(IRIS_INFO).isEmpty()
+                && lines(IRIS_DEBUG).isEmpty() && lines(IMMEDIATELY_FAST).isEmpty());
+        if (result.isEmpty() && !hasRightFooter) return vanillaLines;
         // Unknown entries and the vanilla keybind footer keep their original lines.
-        if (!vanillaLines.isEmpty() && !vanillaLines.getFirst().isEmpty()) {
+        if (!result.isEmpty() && !vanillaLines.isEmpty() && !vanillaLines.getFirst().isEmpty()) {
             result.add("");
         }
         result.addAll(vanillaLines);
+        if (hasRightFooter) {
+            section(result, lines(IRIS_INFO));
+            section(result, lines(IRIS_DEBUG));
+            section(result, lines(IMMEDIATELY_FAST));
+        }
         return result;
     }
 
@@ -98,6 +103,7 @@ public final class ClassicDebugLayout {
             section(out, specs.subList(1, 2));
             section(out, specs.subList(2, specs.size()));
         }
+        section(out, lines(SODIUM_RENDERER));
         addTarget(out, LOOKING_AT_BLOCK, LOOKING_AT_BLOCK_STATE, LOOKING_AT_BLOCK_TAGS);
         addTarget(out, LOOKING_AT_FLUID, LOOKING_AT_FLUID_STATE, LOOKING_AT_FLUID_TAGS);
         addTarget(out, LOOKING_AT_ENTITY, LOOKING_AT_ENTITY_TAGS);

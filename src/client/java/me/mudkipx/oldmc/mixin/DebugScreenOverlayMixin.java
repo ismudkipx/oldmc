@@ -31,7 +31,10 @@ abstract class DebugScreenOverlayMixin {
             LevelChunk clientChunk, LevelChunk serverChunk, Operation<Void> original,
             @Share("layout") LocalRef<ClassicDebugLayout> frame) {
         DebugItem item = OldMCOptions.DEBUG.enabled() ? DebugEntryLookup.get(entry) : null;
-        if (item != null) {
+        if (item != null
+                && (item != DebugItem.SODIUM_RENDERER || OldMCOptions.SODIUM_F3_RIGHT.enabled())
+                && (item != DebugItem.IMMEDIATELY_FAST || OldMCOptions.IMMEDIATELY_FAST_F3_RIGHT.enabled())
+                && ((item != DebugItem.IRIS_INFO && item != DebugItem.IRIS_DEBUG) || OldMCOptions.IRIS_F3_RIGHT.enabled())) {
             if (frame.get() == null) {
                 frame.set(new ClassicDebugLayout());
             }

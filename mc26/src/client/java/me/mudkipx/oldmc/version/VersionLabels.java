@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
 
 public final class VersionLabels {
     private static final Pattern YEAR_26_RELEASE = Pattern.compile("26\\.([1-9][0-9]{0,8})(\\.[1-9][0-9]*)?");
+    private static final Pattern MOD_GAME_VERSION = Pattern.compile("\\+mc(26\\.[0-9]+(?:\\.[0-9]+)?)(?:-build\\.[0-9]+|-local)?$");
+    private static final String IRIS_DEV_LABEL = " (Development Environment)";
     public static final String NAME = "Lnet/minecraft/WorldVersion;name()Ljava/lang/String;";
 
     public static String display(String version) {
@@ -25,6 +27,36 @@ public final class VersionLabels {
             case "26.3" -> "1.26.4";
             default -> version;
         };
+    }
+
+    public static String sodiumDebugVersion(String sodiumVersion) {
+        if (!OldMCOptions.SODIUM_F3_VERSION.enabled() || !OldMCOptions.VERSION.enabled()) return sodiumVersion;
+        return formatModGameVersion(sodiumVersion, sodiumVersion.length());
+    }
+
+    public static String irisDebugVersion(String formattedVersion) {
+        if (!OldMCOptions.IRIS_F3_VERSION.enabled() || !OldMCOptions.VERSION.enabled()) return formattedVersion;
+        int end = formattedVersion.length();
+        if (formattedVersion.endsWith(IRIS_DEV_LABEL)) end -= IRIS_DEV_LABEL.length();
+        return formatModGameVersion(formattedVersion, end);
+    }
+
+    private static String formatModGameVersion(String modVersion, int versionEnd) {
+        var match = MOD_GAME_VERSION.matcher(modVersion).region(0, versionEnd);
+        if (!match.find()) return modVersion;
+        String version = match.group(1);
+        String label = display(version);
+        if (label.equals(version)) return modVersion;
+        return modVersion.substring(0, match.start(1)) + label + modVersion.substring(match.end(1));
+    }
+
+    public static String immediatelyFastDebugVersion(String modVersion) {
+        if (!OldMCOptions.IMMEDIATELY_FAST_F3_VERSION.enabled() || !OldMCOptions.VERSION.enabled()) return modVersion;
+        int separator = modVersion.lastIndexOf('+');
+        if (separator < 0) return modVersion;
+        String gameVersion = modVersion.substring(separator + 1);
+        String label = display(gameVersion);
+        return gameVersion.equals(label) ? modVersion : modVersion.substring(0, separator + 1) + label;
     }
 
     public static String launchProfile(String profile) {

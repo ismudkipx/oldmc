@@ -76,6 +76,24 @@ public final class OldMCSettingsScreen extends OptionsSubScreen {
         var general = rows.addSection("general");
         addToggle(general, OldMCOptions.DIRT_BACKGROUND);
         addToggle(general, OldMCOptions.DEBUG);
+        if (controls.containsKey(OldMCOptions.SODIUM_F3_RIGHT)) {
+            addToggle(general, OldMCOptions.SODIUM_F3_RIGHT);
+        }
+        if (controls.containsKey(OldMCOptions.SODIUM_F3_VERSION)) {
+            addToggle(general, OldMCOptions.SODIUM_F3_VERSION);
+        }
+        if (controls.containsKey(OldMCOptions.IMMEDIATELY_FAST_F3_RIGHT)) {
+            addToggle(general, OldMCOptions.IMMEDIATELY_FAST_F3_RIGHT);
+        }
+        if (controls.containsKey(OldMCOptions.IMMEDIATELY_FAST_F3_VERSION)) {
+            addToggle(general, OldMCOptions.IMMEDIATELY_FAST_F3_VERSION);
+        }
+        if (controls.containsKey(OldMCOptions.IRIS_F3_RIGHT)) {
+            addToggle(general, OldMCOptions.IRIS_F3_RIGHT);
+        }
+        if (controls.containsKey(OldMCOptions.IRIS_F3_VERSION)) {
+            addToggle(general, OldMCOptions.IRIS_F3_VERSION);
+        }
         if (controls.containsKey(OldMCOptions.VERSION)) {
             addToggle(general, OldMCOptions.VERSION);
             addVersionFormat(general);

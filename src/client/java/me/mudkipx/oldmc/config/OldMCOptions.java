@@ -17,6 +17,9 @@ import java.nio.file.StandardCopyOption;
 
 public enum OldMCOptions {
     PERCENTAGE("percentage"), GRID("grid"), DIRT_BACKGROUND("dirtBackground"), DEBUG("debug"),
+    SODIUM_F3_RIGHT("sodiumF3Right"), SODIUM_F3_VERSION("sodiumF3Version"),
+    IMMEDIATELY_FAST_F3_RIGHT("immediatelyFastF3Right"), IMMEDIATELY_FAST_F3_VERSION("immediatelyFastF3Version"),
+    IRIS_F3_RIGHT("irisF3Right"), IRIS_F3_VERSION("irisF3Version"),
     TITLE_SIDE_BUTTONS("titleSideButtons"), PAUSE_MENU_TEXT("pauseMenuText"), REMOVE_FEEDBACK("removeFeedback"),
     REMOVE_PLAYER_REPORTING("removePlayerReporting"), VERSION("version");
 
@@ -24,6 +27,9 @@ public enum OldMCOptions {
     static final boolean DEFAULT_MAJOR_VERSION_FORMAT = true;
     private static boolean majorVersionFormat = DEFAULT_MAJOR_VERSION_FORMAT;
     private static boolean dirty;
+    private static final boolean HAS_SODIUM = FabricLoader.getInstance().isModLoaded("sodium");
+    private static final boolean HAS_IMMEDIATELY_FAST = FabricLoader.getInstance().isModLoaded("immediatelyfast");
+    private static final boolean HAS_IRIS = FabricLoader.getInstance().isModLoaded("iris");
     private static final boolean HAS_YEAR_VERSION = FabricLoader.getInstance().getModContainer("minecraft")
             .orElseThrow().getMetadata().getVersion().getFriendlyString().startsWith("26.");
     public static final boolean HAS_PAUSE_MENU_ICONS = FabricLoader.getInstance().getModContainer("minecraft")
@@ -81,7 +87,13 @@ public enum OldMCOptions {
 
     boolean available() {
         return switch (this) {
+            case SODIUM_F3_RIGHT -> HAS_SODIUM;
             case VERSION -> HAS_YEAR_VERSION;
+            case SODIUM_F3_VERSION -> HAS_SODIUM && HAS_YEAR_VERSION;
+            case IMMEDIATELY_FAST_F3_RIGHT -> HAS_IMMEDIATELY_FAST;
+            case IRIS_F3_RIGHT -> HAS_IRIS;
+            case IMMEDIATELY_FAST_F3_VERSION -> HAS_IMMEDIATELY_FAST && HAS_YEAR_VERSION;
+            case IRIS_F3_VERSION -> HAS_IRIS && HAS_YEAR_VERSION;
             case PAUSE_MENU_TEXT, TITLE_SIDE_BUTTONS -> HAS_PAUSE_MENU_ICONS;
             default -> true;
         };

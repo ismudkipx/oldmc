@@ -38,6 +38,24 @@ public final class OldMCOneConfig implements ConfigEntrypoint {
             addToggle(root, "world", OldMCOptions.GRID);
             addToggle(root, "general", OldMCOptions.DIRT_BACKGROUND);
             addToggle(root, "general", OldMCOptions.DEBUG);
+            if (OldMCOptions.SODIUM_F3_RIGHT.available()) {
+                addToggle(root, "general", OldMCOptions.SODIUM_F3_RIGHT);
+            }
+            if (OldMCOptions.SODIUM_F3_VERSION.available()) {
+                addToggle(root, "general", OldMCOptions.SODIUM_F3_VERSION);
+            }
+            if (OldMCOptions.IMMEDIATELY_FAST_F3_RIGHT.available()) {
+                addToggle(root, "general", OldMCOptions.IMMEDIATELY_FAST_F3_RIGHT);
+            }
+            if (OldMCOptions.IMMEDIATELY_FAST_F3_VERSION.available()) {
+                addToggle(root, "general", OldMCOptions.IMMEDIATELY_FAST_F3_VERSION);
+            }
+            if (OldMCOptions.IRIS_F3_RIGHT.available()) {
+                addToggle(root, "general", OldMCOptions.IRIS_F3_RIGHT);
+            }
+            if (OldMCOptions.IRIS_F3_VERSION.available()) {
+                addToggle(root, "general", OldMCOptions.IRIS_F3_VERSION);
+            }
             if (OldMCOptions.VERSION.available()) {
                 addToggle(root, "general", OldMCOptions.VERSION);
                 var format = option("majorVersionFormat", "oldmc.versionFormat.name", "oldmc.option.versionFormat.tooltip",
