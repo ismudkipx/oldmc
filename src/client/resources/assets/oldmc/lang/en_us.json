@@ -45,7 +45,7 @@
   "oldmc.option.grid.tooltip": "Use the default 29×29 chunk grid from 1.21.8.",
   "oldmc.option.debug.tooltip": "Restore the F3 layout from Minecraft 1.21.8 and earlier.",
   "oldmc.option.version.tooltip": "Display classic version numbers in the client. Server connections use the actual game version.",
-  "oldmc.option.versionFormat.tooltip": "Major update format follows Minecraft’s earlier numbering: 26.1 becomes 1.22, 26.1.x becomes 1.22.x, and 26.2 becomes 1.23.\nYear-based update format counts each update in order: 26.1 becomes 1.26, 26.1.1 becomes 1.26.1, 26.1.2 becomes 1.26.2, and 26.2 becomes 1.26.3.\nThe 1.21.x format starts at 1.21.12 for 26.1 and counts up by one for each update or hotfix. 26.2 appears as 1.21.15.\nRequires “Classic version numbers”.",
+  "oldmc.option.versionFormat.tooltip": "Major update format uses Minecraft’s earlier numbering scheme for major updates. 26.1 becomes 1.22, 26.1.x becomes 1.22.x, and 26.2 becomes 1.23.\nWith the year-based update format, 26.1 becomes 1.26, 26.1.1 becomes 1.26.1, 26.1.2 becomes 1.26.2, 26.2 becomes 1.26.3, and so on.\nWith the 1.21.x format, 26.1 appears as 1.21.12. Each subsequent update or hotfix increases the last number by one.\nRequires “Classic version numbers”.",
   "oldmc.option.dirtBackground": "Dirt background",
   "oldmc.option.dirtBackground.tooltip": "Restore the dirt background from Minecraft 1.20.4 and earlier.",
   "oldmc.resetOption": "Reset %s to default",
