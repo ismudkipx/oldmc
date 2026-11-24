@@ -43,9 +43,9 @@ public final class ClassicWorldForm {
         this.experiments = experiments;
         this.create = create;
         this.cancel = cancel;
-        structures = CycleButton.onOffBuilder(state.isGenerateStructures()).create(
+        structures = WorldFormButtons.onOffBuilder(state.isGenerateStructures()).create(
                 Component.translatable("selectWorld.mapFeatures"), (button, value) -> state.setGenerateStructures(value));
-        chest = CycleButton.onOffBuilder(state.isBonusChest()).create(
+        chest = WorldFormButtons.onOffBuilder(state.isBonusChest()).create(
                 Component.translatable("selectWorld.bonusItems"), (button, value) -> state.setBonusChest(value));
         page = Button.builder(Component.empty(), b -> switchPage.run()).build();
         seed.setHint(Component.empty());
