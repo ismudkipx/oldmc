@@ -67,6 +67,7 @@ public final class OldMCOneConfig implements ConfigEntrypoint {
             addToggle(root, "world", OldMCOptions.GRID);
             if (OldMCOptions.CLASSIC_BABY_MOBS.available()) {
                 addToggle(root, "mobs", OldMCOptions.CLASSIC_BABY_MOBS);
+                addToggle(root, "mobs", OldMCOptions.CLASSIC_BABY_SOUNDS);
             }
             addToggle(root, "menus", OldMCOptions.CLASSIC_CREATE_WORLD);
             if (OldMCOptions.TITLE_SIDE_BUTTONS.available()) {

@@ -100,7 +100,9 @@ public final class OldMCSettingsScreen extends OptionsSubScreen {
         addToggle(world, OldMCOptions.GRID);
 
         if (controls.containsKey(OldMCOptions.CLASSIC_BABY_MOBS)) {
-            addToggle(rows.addSection("mobs"), OldMCOptions.CLASSIC_BABY_MOBS);
+            var mobs = rows.addSection("mobs");
+            addToggle(mobs, OldMCOptions.CLASSIC_BABY_MOBS);
+            addToggle(mobs, OldMCOptions.CLASSIC_BABY_SOUNDS);
         }
 
         var menus = rows.addSection("menus");

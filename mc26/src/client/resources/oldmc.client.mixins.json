@@ -12,6 +12,7 @@
     "BabyVillagerClothingMixin",
     "BabyRabbitModelMixin",
     "BabyHorseMarkingsMixin",
+    "BabySoundMixin",
     "LevelLoadingScreenMixin",
     "DebugEntryListMixin",
     "DebugProfileAccessor",

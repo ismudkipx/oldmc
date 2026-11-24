@@ -1,17 +1,21 @@
 package me.mudkipx.oldmc.config;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.JsonParseException;
 import me.mudkipx.oldmc.mixin.DebugProfileAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.SemanticVersion;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.debug.DebugScreenProfile;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
@@ -20,11 +24,13 @@ public enum OldMCOptions {
     SODIUM_F3_RIGHT("sodiumF3Right"), SODIUM_F3_VERSION("sodiumF3Version"),
     IMMEDIATELY_FAST_F3_RIGHT("immediatelyFastF3Right"), IMMEDIATELY_FAST_F3_VERSION("immediatelyFastF3Version"),
     IRIS_F3_RIGHT("irisF3Right"), IRIS_F3_VERSION("irisF3Version"),
-    CLASSIC_BABY_MOBS("classicBabyMobs"),
+    CLASSIC_BABY_MOBS("classicBabyMobs"), CLASSIC_BABY_SOUNDS("classicBabySounds"),
     CLASSIC_CREATE_WORLD("classicCreateWorld"),
     TITLE_SIDE_BUTTONS("titleSideButtons"), PAUSE_MENU_TEXT("pauseMenuText"), REMOVE_FEEDBACK("removeFeedback"),
     REMOVE_PLAYER_REPORTING("removePlayerReporting"), VERSION("version");
 
+    private static final Logger LOGGER = LoggerFactory.getLogger("OldMC");
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Path FILE = FabricLoader.getInstance().getConfigDir().resolve("oldmc.json");
     private static VersionFormat versionFormat = VersionFormat.DEFAULT;
     private static boolean dirty;
@@ -89,7 +95,7 @@ public enum OldMCOptions {
     boolean available() {
         return switch (this) {
             case SODIUM_F3_RIGHT -> HAS_SODIUM;
-            case VERSION, CLASSIC_BABY_MOBS -> HAS_YEAR_VERSION;
+            case VERSION, CLASSIC_BABY_MOBS, CLASSIC_BABY_SOUNDS -> HAS_YEAR_VERSION;
             case SODIUM_F3_VERSION -> HAS_SODIUM && HAS_YEAR_VERSION;
             case IMMEDIATELY_FAST_F3_RIGHT -> HAS_IMMEDIATELY_FAST;
             case IRIS_F3_RIGHT -> HAS_IRIS;
@@ -112,36 +118,57 @@ public enum OldMCOptions {
     }
 
     static {
-        if (Files.isRegularFile(FILE)) {
+        load();
+    }
+
+    private static void load() {
+        try {
+            JsonElement data;
             try (var reader = Files.newBufferedReader(FILE)) {
-                var data = JsonParser.parseReader(reader).getAsJsonObject();
-                var placement = data.get("friendButtonPlacement");
-                if (placement != null && placement.isJsonPrimitive() && placement.getAsJsonPrimitive().isString()) {
-                    friendPlacement = FriendButtonPlacement.fromKey(placement.getAsString());
-                }
-                var titlePlacement = data.get("titleFriendButtonPlacement");
-                if (titlePlacement != null && titlePlacement.isJsonPrimitive() && titlePlacement.getAsJsonPrimitive().isString()) {
-                    titleFriendPlacement = TitleFriendPlacement.fromKey(titlePlacement.getAsString());
-                }
-                var format = data.get("versionFormat");
-                if (format != null && format.isJsonPrimitive() && format.getAsJsonPrimitive().isString()) {
-                    versionFormat = VersionFormat.fromKey(format.getAsString());
-                } else {
-                    var legacy = data.get("majorVersionFormat");
-                    if (legacy != null && legacy.isJsonPrimitive() && legacy.getAsJsonPrimitive().isBoolean()) {
-                        versionFormat = legacy.getAsBoolean() ? VersionFormat.MAJOR : VersionFormat.YEAR;
-                    }
-                }
-                for (var option : values()) {
-                    var value = data.get(option.key);
-                    if (value != null && value.isJsonPrimitive() && value.getAsJsonPrimitive().isBoolean()) {
-                        option.enabled = value.getAsBoolean();
-                    }
-                }
-            } catch (RuntimeException | IOException e) {
-                LoggerFactory.getLogger("OldMC").warn("Could not read {}", FILE, e);
+                data = GSON.fromJson(reader, JsonElement.class);
             }
+            if (data != null && !data.isJsonNull()) {
+                if (!data.isJsonObject()) throw new JsonParseException("Expected a configuration object");
+                applyConfig(data.getAsJsonObject());
+                return;
+            }
+            LOGGER.warn("[OldMC] Empty configuration file; reset to default values.");
+        } catch (NoSuchFileException ignored) {
+            // First launch: create the default file without a warning.
+        } catch (IOException | JsonParseException e) {
+            LOGGER.warn("[OldMC] Failed to load configuration file; reset to default values.");
         }
+        for (var option : values()) option.enabled = option.defaultValue;
+        friendPlacement = FriendButtonPlacement.DEFAULT;
+        titleFriendPlacement = TitleFriendPlacement.DEFAULT;
+        versionFormat = VersionFormat.DEFAULT;
+        dirty = true;
+        saveIfDirty();
+    }
+
+    private static void applyConfig(JsonObject data) {
+        String placement = readString(data, "friendButtonPlacement");
+        if (placement != null) friendPlacement = FriendButtonPlacement.fromKey(placement);
+        String titlePlacement = readString(data, "titleFriendButtonPlacement");
+        if (titlePlacement != null) titleFriendPlacement = TitleFriendPlacement.fromKey(titlePlacement);
+        String format = readString(data, "versionFormat");
+        if (format != null) {
+            versionFormat = VersionFormat.fromKey(format);
+        } else {
+            Boolean legacy = GSON.fromJson(data.get("majorVersionFormat"), Boolean.class);
+            if (legacy != null) versionFormat = legacy ? VersionFormat.MAJOR : VersionFormat.YEAR;
+        }
+        for (var option : values()) {
+            Boolean value = GSON.fromJson(data.get(option.key), Boolean.class);
+            if (value != null) option.enabled = value;
+        }
+    }
+
+    private static String readString(JsonObject data, String key) {
+        var value = data.get(key);
+        if (value == null || value.isJsonNull()) return null;
+        if (value.isJsonPrimitive() && value.getAsJsonPrimitive().isString()) return value.getAsString();
+        throw new JsonParseException("Expected a string for " + key);
     }
 
     static synchronized void applyChanges(Runnable edits) {
@@ -174,7 +201,7 @@ public enum OldMCOptions {
             Files.createDirectories(FILE.getParent());
             Path tmp = Files.createTempFile(FILE.getParent(), "oldmc-", ".tmp");
             try {
-                Files.writeString(tmp, new GsonBuilder().setPrettyPrinting().create().toJson(data) + "\n");
+                Files.writeString(tmp, GSON.toJson(data) + "\n");
                 try {
                     Files.move(tmp, FILE, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
                 } catch (java.nio.file.AtomicMoveNotSupportedException e) {
@@ -185,7 +212,7 @@ public enum OldMCOptions {
                 Files.deleteIfExists(tmp);
             }
         } catch (IOException e) {
-            LoggerFactory.getLogger("OldMC").warn("Could not save {}", FILE, e);
+            LOGGER.warn("[OldMC] Failed to save configuration file: {}", FILE, e);
         }
     }
 }

@@ -9,6 +9,7 @@ import me.mudkipx.oldmc.debug.ClassicDebugLayout;
 import me.mudkipx.oldmc.debug.DebugEntryLines;
 import me.mudkipx.oldmc.debug.DebugEntryLookup;
 import me.mudkipx.oldmc.debug.DebugItem;
+import me.mudkipx.oldmc.debug.F3CompatibilityWarning;
 import net.minecraft.client.gui.components.DebugScreenOverlay;
 import net.minecraft.client.gui.components.debug.DebugScreenDisplayer;
 import net.minecraft.client.gui.components.debug.DebugScreenEntry;
@@ -16,11 +17,18 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(DebugScreenOverlay.class)
 abstract class DebugScreenOverlayMixin {
+    @Inject(method = "<init>", at = @At("RETURN"))
+    private void oldmc$checkF3Compatibility(CallbackInfo ci) {
+        F3CompatibilityWarning.check(getClass(), DebugScreenOverlay.class);
+    }
+
     @WrapOperation(
         method = RenderTargets.DEBUG_RENDER,
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/debug/DebugScreenEntry;display("

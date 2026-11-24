@@ -7,6 +7,8 @@
   "oldmc.category.menus": "Menus and Screens",
   "oldmc.option.classicBabyMobs": "Restore baby mob appearances",
   "oldmc.option.classicBabyMobs.tooltip": "Restore baby mob appearances from before 26.1.",
+  "oldmc.option.classicBabySounds": "Restore old baby mob sounds",
+  "oldmc.option.classicBabySounds.tooltip": "Restore old baby mob sounds",
   "oldmc.option.classicCreateWorld": "Classic world creation screen",
   "oldmc.option.classicCreateWorld.tooltip": "Restore the Create New World screen from Minecraft 1.19.3 and earlier.",
   "oldmc.createWorld.moreOptions": "More World Options...",
