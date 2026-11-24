@@ -30,17 +30,6 @@ public final class OldMCSodiumConfig implements ConfigEntryPoint {
         mod.formatVersion(version -> version.split("[-+]", 2)[0]);
         SodiumResources.setIcon(mod);
 
-        var world = page(builder, "world");
-        addToggle(builder, world, OldMCOptions.PERCENTAGE);
-        addToggle(builder, world, OldMCOptions.GRID);
-        mod.addPage(world);
-
-        if (OldMCOptions.CLASSIC_BABY_MOBS.available()) {
-            var mobs = page(builder, "mobs");
-            addToggle(builder, mobs, OldMCOptions.CLASSIC_BABY_MOBS);
-            mod.addPage(mobs);
-        }
-
         var general = page(builder, "general");
         addToggle(builder, general, OldMCOptions.DIRT_BACKGROUND);
         addToggle(builder, general, OldMCOptions.DEBUG);
@@ -63,12 +52,21 @@ public final class OldMCSodiumConfig implements ConfigEntryPoint {
         if (OldMCOptions.VERSION.available()) {
             addToggle(builder, general, OldMCOptions.VERSION);
             addChoice(builder, general, "version_format", "oldmc.versionFormat.name", "oldmc.option.versionFormat.tooltip",
-                    VersionFormat.of(OldMCOptions.DEFAULT_MAJOR_VERSION_FORMAT),
-                    () -> VersionFormat.of(OldMCOptions.usesMajorVersionFormat()),
-                    value -> OldMCOptions.setMajorVersionFormat(value == VersionFormat.MAJOR),
-                    value -> value == VersionFormat.MAJOR ? "oldmc.format.major" : "oldmc.format.year");
+                    VersionFormat.DEFAULT, OldMCOptions::versionFormat, OldMCOptions::setVersionFormat,
+                    VersionFormat::labelKey);
         }
         mod.addPage(general);
+
+        var world = page(builder, "world");
+        addToggle(builder, world, OldMCOptions.PERCENTAGE);
+        addToggle(builder, world, OldMCOptions.GRID);
+        mod.addPage(world);
+
+        if (OldMCOptions.CLASSIC_BABY_MOBS.available()) {
+            var mobs = page(builder, "mobs");
+            addToggle(builder, mobs, OldMCOptions.CLASSIC_BABY_MOBS);
+            mod.addPage(mobs);
+        }
 
         var menus = page(builder, "menus");
         addToggle(builder, menus, OldMCOptions.CLASSIC_CREATE_WORLD);
@@ -115,13 +113,5 @@ public final class OldMCSodiumConfig implements ConfigEntryPoint {
                 .setDefaultValue(defaultValue)
                 .setBinding(value -> edits.add(() -> set.accept(value)), get)
                 .setStorageHandler(storage));
-    }
-
-    private enum VersionFormat {
-        YEAR, MAJOR;
-
-        static VersionFormat of(boolean major) {
-            return major ? MAJOR : YEAR;
-        }
     }
 }

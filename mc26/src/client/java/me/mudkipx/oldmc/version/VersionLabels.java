@@ -1,6 +1,7 @@
 package me.mudkipx.oldmc.version;
 
 import me.mudkipx.oldmc.config.OldMCOptions;
+import me.mudkipx.oldmc.config.VersionFormat;
 
 import java.util.regex.Pattern;
 
@@ -12,21 +13,26 @@ public final class VersionLabels {
 
     public static String display(String version) {
         if (!OldMCOptions.VERSION.enabled()) return version;
-        if (OldMCOptions.usesMajorVersionFormat()) {
+        var format = OldMCOptions.versionFormat();
+        if (format == VersionFormat.MAJOR) {
             var release = YEAR_26_RELEASE.matcher(version);
             if (!release.matches()) return version;
             int major = 21 + Integer.parseInt(release.group(1));
             String patch = release.group(2);
             return "1." + major + (patch == null ? "" : patch);
         }
-        return switch (version) {
-            case "26.1" -> "1.26";
-            case "26.1.1" -> "1.26.1";
-            case "26.1.2" -> "1.26.2";
-            case "26.2" -> "1.26.3";
-            case "26.3" -> "1.26.4";
-            default -> version;
+        // Each released update, including a hotfix, advances the displayed patch by one.
+        int update = switch (version) {
+            case "26.1" -> 0;
+            case "26.1.1" -> 1;
+            case "26.1.2" -> 2;
+            case "26.2" -> 3;
+            case "26.3" -> 4;
+            default -> -1;
         };
+        if (update < 0) return version;
+        if (format == VersionFormat.PATCH_1_21) return "1.21." + (12 + update);
+        return update == 0 ? "1.26" : "1.26." + update;
     }
 
     public static String sodiumDebugVersion(String sodiumVersion) {

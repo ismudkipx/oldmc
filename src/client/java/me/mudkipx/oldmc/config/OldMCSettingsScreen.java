@@ -21,7 +21,7 @@ public final class OldMCSettingsScreen extends OptionsSubScreen {
     private EditBox searchBox;
     private FriendButtonPlacement friendPlacement = OldMCOptions.friendPlacement();
     private TitleFriendPlacement titlePlacement = OldMCOptions.titleFriendPlacement();
-    private boolean majorVersionFormat = OldMCOptions.usesMajorVersionFormat();
+    private VersionFormat versionFormat = OldMCOptions.versionFormat();
 
     public OldMCSettingsScreen(Screen parent) {
         super(parent, Minecraft.getInstance().options, Component.translatable("oldmc.settings"));
@@ -69,14 +69,6 @@ public final class OldMCSettingsScreen extends OptionsSubScreen {
 
     @Override
     protected void addOptions() {
-        var world = rows.addSection("world");
-        addToggle(world, OldMCOptions.PERCENTAGE);
-        addToggle(world, OldMCOptions.GRID);
-
-        if (controls.containsKey(OldMCOptions.CLASSIC_BABY_MOBS)) {
-            addToggle(rows.addSection("mobs"), OldMCOptions.CLASSIC_BABY_MOBS);
-        }
-
         var general = rows.addSection("general");
         addToggle(general, OldMCOptions.DIRT_BACKGROUND);
         addToggle(general, OldMCOptions.DEBUG);
@@ -101,6 +93,14 @@ public final class OldMCSettingsScreen extends OptionsSubScreen {
         if (controls.containsKey(OldMCOptions.VERSION)) {
             addToggle(general, OldMCOptions.VERSION);
             addVersionFormat(general);
+        }
+
+        var world = rows.addSection("world");
+        addToggle(world, OldMCOptions.PERCENTAGE);
+        addToggle(world, OldMCOptions.GRID);
+
+        if (controls.containsKey(OldMCOptions.CLASSIC_BABY_MOBS)) {
+            addToggle(rows.addSection("mobs"), OldMCOptions.CLASSIC_BABY_MOBS);
         }
 
         var menus = rows.addSection("menus");
@@ -129,13 +129,13 @@ public final class OldMCSettingsScreen extends OptionsSubScreen {
 
     private void addVersionFormat(OldMCOptionList.Section section) {
         var button = Button.builder(formatLabel(), clicked -> {
-            majorVersionFormat = !majorVersionFormat;
+            versionFormat = versionFormat.next();
             clicked.setMessage(formatLabel());
         }).width(OldMCOptionList.VALUE_WIDTH).build();
         button.setTooltip(Tooltip.create(Component.translatable("oldmc.option.versionFormat.tooltip")));
         section.addOption(button, "oldmc.versionFormat.name",
-                () -> majorVersionFormat != OldMCOptions.DEFAULT_MAJOR_VERSION_FORMAT, () -> {
-                    majorVersionFormat = OldMCOptions.DEFAULT_MAJOR_VERSION_FORMAT;
+                () -> versionFormat != VersionFormat.DEFAULT, () -> {
+                    versionFormat = VersionFormat.DEFAULT;
                     button.setMessage(formatLabel());
                 });
     }
@@ -180,7 +180,7 @@ public final class OldMCSettingsScreen extends OptionsSubScreen {
 
     private Component formatLabel() {
         return Component.translatable("oldmc.option.versionFormat",
-                Component.translatable(majorVersionFormat ? "oldmc.format.major" : "oldmc.format.year"));
+                Component.translatable(versionFormat.labelKey()));
     }
 
     @Override
@@ -188,7 +188,7 @@ public final class OldMCSettingsScreen extends OptionsSubScreen {
         super.removed();
         OldMCOptions.applyChanges(() -> {
             controls.forEach((option, control) -> option.set(control.get()));
-            if (controls.containsKey(OldMCOptions.VERSION)) OldMCOptions.setMajorVersionFormat(majorVersionFormat);
+            if (controls.containsKey(OldMCOptions.VERSION)) OldMCOptions.setVersionFormat(versionFormat);
             OldMCOptions.setFriendPlacement(friendPlacement);
             OldMCOptions.setTitleFriendPlacement(titlePlacement);
         });

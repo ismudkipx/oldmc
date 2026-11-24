@@ -26,8 +26,7 @@ public enum OldMCOptions {
     REMOVE_PLAYER_REPORTING("removePlayerReporting"), VERSION("version");
 
     private static final Path FILE = FabricLoader.getInstance().getConfigDir().resolve("oldmc.json");
-    static final boolean DEFAULT_MAJOR_VERSION_FORMAT = true;
-    private static boolean majorVersionFormat = DEFAULT_MAJOR_VERSION_FORMAT;
+    private static VersionFormat versionFormat = VersionFormat.DEFAULT;
     private static boolean dirty;
     private static final boolean HAS_SODIUM = FabricLoader.getInstance().isModLoaded("sodium");
     private static final boolean HAS_IMMEDIATELY_FAST = FabricLoader.getInstance().isModLoaded("immediatelyfast");
@@ -76,13 +75,13 @@ public enum OldMCOptions {
         }
     }
 
-    public static boolean usesMajorVersionFormat() {
-        return majorVersionFormat;
+    public static VersionFormat versionFormat() {
+        return versionFormat;
     }
 
-    static void setMajorVersionFormat(boolean value) {
-        if (majorVersionFormat != value) {
-            majorVersionFormat = value;
+    static void setVersionFormat(VersionFormat value) {
+        if (versionFormat != value) {
+            versionFormat = value;
             dirty = true;
         }
     }
@@ -124,9 +123,14 @@ public enum OldMCOptions {
                 if (titlePlacement != null && titlePlacement.isJsonPrimitive() && titlePlacement.getAsJsonPrimitive().isString()) {
                     titleFriendPlacement = TitleFriendPlacement.fromKey(titlePlacement.getAsString());
                 }
-                var format = data.get("majorVersionFormat");
-                if (format != null && format.isJsonPrimitive() && format.getAsJsonPrimitive().isBoolean()) {
-                    majorVersionFormat = format.getAsBoolean();
+                var format = data.get("versionFormat");
+                if (format != null && format.isJsonPrimitive() && format.getAsJsonPrimitive().isString()) {
+                    versionFormat = VersionFormat.fromKey(format.getAsString());
+                } else {
+                    var legacy = data.get("majorVersionFormat");
+                    if (legacy != null && legacy.isJsonPrimitive() && legacy.getAsJsonPrimitive().isBoolean()) {
+                        versionFormat = legacy.getAsBoolean() ? VersionFormat.MAJOR : VersionFormat.YEAR;
+                    }
                 }
                 for (var option : values()) {
                     var value = data.get(option.key);
@@ -143,7 +147,7 @@ public enum OldMCOptions {
     static synchronized void applyChanges(Runnable edits) {
         boolean debugBefore = DEBUG.enabled();
         boolean versionBefore = VERSION.enabled();
-        boolean formatBefore = usesMajorVersionFormat();
+        var formatBefore = versionFormat;
         edits.run();
         if (!dirty) return;
         saveIfDirty();
@@ -156,7 +160,7 @@ public enum OldMCOptions {
                 entries.save();
             }
         }
-        if (versionBefore != VERSION.enabled() || (formatBefore != usesMajorVersionFormat() && versionBefore)) client.updateTitle();
+        if (versionBefore != VERSION.enabled() || (formatBefore != versionFormat && versionBefore)) client.updateTitle();
     }
 
     static synchronized void saveIfDirty() {
@@ -164,7 +168,7 @@ public enum OldMCOptions {
         var data = new JsonObject();
         data.addProperty("friendButtonPlacement", friendPlacement.key());
         data.addProperty("titleFriendButtonPlacement", titleFriendPlacement.key());
-        data.addProperty("majorVersionFormat", majorVersionFormat);
+        data.addProperty("versionFormat", versionFormat.key);
         for (var option : values()) data.addProperty(option.key, option.enabled);
         try {
             Files.createDirectories(FILE.getParent());

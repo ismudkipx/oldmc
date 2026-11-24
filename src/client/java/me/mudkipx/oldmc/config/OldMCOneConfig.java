@@ -34,11 +34,6 @@ public final class OldMCOneConfig implements ConfigEntrypoint {
             var root = Tree.tree(id);
             // This backend hook keeps OldMC's existing JSON as the sole settings file.
             root.addMetadata("custom_save", (Runnable) OldMCOptions::saveIfDirty);
-            addToggle(root, "world", OldMCOptions.PERCENTAGE);
-            addToggle(root, "world", OldMCOptions.GRID);
-            if (OldMCOptions.CLASSIC_BABY_MOBS.available()) {
-                addToggle(root, "mobs", OldMCOptions.CLASSIC_BABY_MOBS);
-            }
             addToggle(root, "general", OldMCOptions.DIRT_BACKGROUND);
             addToggle(root, "general", OldMCOptions.DEBUG);
             if (OldMCOptions.SODIUM_F3_RIGHT.available()) {
@@ -61,11 +56,17 @@ public final class OldMCOneConfig implements ConfigEntrypoint {
             }
             if (OldMCOptions.VERSION.available()) {
                 addToggle(root, "general", OldMCOptions.VERSION);
-                var format = option("majorVersionFormat", "oldmc.versionFormat.name", "oldmc.option.versionFormat.tooltip",
-                        "general", () -> OldMCOptions.usesMajorVersionFormat() ? 1 : 0,
-                        index -> OldMCOptions.setMajorVersionFormat(index == 1),
-                        OldMCOptions.DEFAULT_MAJOR_VERSION_FORMAT ? 1 : 0, Integer.class);
-                addChoices(root, format, new String[]{"oldmc.format.year", "oldmc.format.major"});
+                var formats = VersionFormat.values();
+                var format = option("versionFormat", "oldmc.versionFormat.name", "oldmc.option.versionFormat.tooltip",
+                        "general", () -> OldMCOptions.versionFormat().ordinal(),
+                        index -> OldMCOptions.setVersionFormat(formats[index]),
+                        VersionFormat.DEFAULT.ordinal(), Integer.class);
+                addChoices(root, format, Arrays.stream(formats).map(VersionFormat::labelKey).toArray(String[]::new));
+            }
+            addToggle(root, "world", OldMCOptions.PERCENTAGE);
+            addToggle(root, "world", OldMCOptions.GRID);
+            if (OldMCOptions.CLASSIC_BABY_MOBS.available()) {
+                addToggle(root, "mobs", OldMCOptions.CLASSIC_BABY_MOBS);
             }
             addToggle(root, "menus", OldMCOptions.CLASSIC_CREATE_WORLD);
             if (OldMCOptions.TITLE_SIDE_BUTTONS.available()) {
