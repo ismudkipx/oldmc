@@ -9,7 +9,6 @@ import org.polyfrost.oneconfig.api.config.v1.Visualizer;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public final class OldMCOneConfig implements ConfigEntrypoint {
@@ -34,77 +33,38 @@ public final class OldMCOneConfig implements ConfigEntrypoint {
             var root = Tree.tree(id);
             // This backend hook keeps OldMC's existing JSON as the sole settings file.
             root.addMetadata("custom_save", (Runnable) OldMCOptions::saveIfDirty);
-            addToggle(root, "general", OldMCOptions.DIRT_BACKGROUND);
-            addToggle(root, "general", OldMCOptions.DEBUG);
-            if (OldMCOptions.SODIUM_F3_RIGHT.available()) {
-                addToggle(root, "general", OldMCOptions.SODIUM_F3_RIGHT);
+            for (var group : OptionCatalog.SECTIONS) {
+                for (var setting : group.settings()) {
+                    switch (setting) {
+                        case OldMCOptions toggle -> addToggle(root, group.key(), toggle);
+                        case OptionCatalog.Choice<?> choice -> addChoice(root, group.key(), choice);
+                    }
+                }
             }
-            if (OldMCOptions.SODIUM_F3_VERSION.available()) {
-                addToggle(root, "general", OldMCOptions.SODIUM_F3_VERSION);
-            }
-            if (OldMCOptions.IMMEDIATELY_FAST_F3_RIGHT.available()) {
-                addToggle(root, "general", OldMCOptions.IMMEDIATELY_FAST_F3_RIGHT);
-            }
-            if (OldMCOptions.IMMEDIATELY_FAST_F3_VERSION.available()) {
-                addToggle(root, "general", OldMCOptions.IMMEDIATELY_FAST_F3_VERSION);
-            }
-            if (OldMCOptions.IRIS_F3_RIGHT.available()) {
-                addToggle(root, "general", OldMCOptions.IRIS_F3_RIGHT);
-            }
-            if (OldMCOptions.IRIS_F3_VERSION.available()) {
-                addToggle(root, "general", OldMCOptions.IRIS_F3_VERSION);
-            }
-            if (OldMCOptions.VERSION.available()) {
-                addToggle(root, "general", OldMCOptions.VERSION);
-                var formats = VersionFormat.values();
-                var format = option("versionFormat", "oldmc.versionFormat.name", "oldmc.option.versionFormat.tooltip",
-                        "general", () -> OldMCOptions.versionFormat().ordinal(),
-                        index -> OldMCOptions.setVersionFormat(formats[index]),
-                        VersionFormat.DEFAULT.ordinal(), Integer.class);
-                addChoices(root, format, Arrays.stream(formats).map(VersionFormat::labelKey).toArray(String[]::new));
-            }
-            addToggle(root, "world", OldMCOptions.PERCENTAGE);
-            addToggle(root, "world", OldMCOptions.GRID);
-            if (OldMCOptions.CLASSIC_BABY_MOBS.available()) {
-                addToggle(root, "mobs", OldMCOptions.CLASSIC_BABY_MOBS);
-                addToggle(root, "mobs", OldMCOptions.CLASSIC_BABY_SOUNDS);
-            }
-            addToggle(root, "menus", OldMCOptions.CLASSIC_CREATE_WORLD);
-            if (OldMCOptions.TITLE_SIDE_BUTTONS.available()) {
-                addToggle(root, "menus", OldMCOptions.TITLE_SIDE_BUTTONS);
-                addPlacement(root, "titleFriendButtonPlacement", OldMCOptions::titleFriendPlacement,
-                        OldMCOptions::setTitleFriendPlacement, TitleFriendPlacement.DEFAULT,
-                        TitleFriendPlacement::key);
-            }
-            if (OldMCOptions.PAUSE_MENU_TEXT.available()) {
-                addToggle(root, "menus", OldMCOptions.PAUSE_MENU_TEXT);
-                addPlacement(root, "friendButtonPlacement", OldMCOptions::friendPlacement,
-                        OldMCOptions::setFriendPlacement, FriendButtonPlacement.DEFAULT,
-                        FriendButtonPlacement::key);
-            }
-            addToggle(root, "menus", OldMCOptions.REMOVE_FEEDBACK);
-            addToggle(root, "menus", OldMCOptions.REMOVE_PLAYER_REPORTING);
             return root;
         }
 
         private static void addToggle(Tree tree, String category, OldMCOptions toggle) {
-            String name = "oldmc.option." + toggle.key;
+            String name = toggle.nameKey();
             var property = option(toggle.key, name, name + ".tooltip", category, toggle::enabled, toggle::set,
                     toggle.defaultValue, Boolean.class);
             property.addMetadata("visualizer", Visualizer.SwitchVisualizer.class);
             tree.put(property);
         }
 
-        private static <E extends Enum<E>> void addPlacement(Tree tree, String id, Supplier<E> read, Consumer<E> write,
-                                                              E defaultValue, Function<E, String> key) {
-            String name = "oldmc.option." + id;
-            var property = option(id, name, name + ".tooltip", "menus", read, write, defaultValue, defaultValue.getDeclaringClass());
-            String[] labels = Arrays.stream(defaultValue.getDeclaringClass().getEnumConstants())
-                    .map(value -> "oldmc.placement." + key.apply(value)).toArray(String[]::new);
-            addChoices(tree, property, labels);
-        }
-
-        private static void addChoices(Tree tree, Property<?> property, String[] labelKeys) {
+        private static <E extends Enum<E>> void addChoice(Tree tree, String category, OptionCatalog.Choice<E> choice) {
+            E[] values = choice.values();
+            Property<?> property;
+            if (choice == OptionCatalog.FORMAT) {
+                // Keep the existing integer-backed OneConfig property for versionFormat.
+                property = option(choice.key(), choice.nameKey(), choice.tooltipKey(), category,
+                        () -> choice.read().get().ordinal(), index -> choice.write().accept(values[index]),
+                        choice.defaultValue().ordinal(), Integer.class);
+            } else {
+                property = option(choice.key(), choice.nameKey(), choice.tooltipKey(), category,
+                        choice.read(), choice.write(), choice.defaultValue(), choice.defaultValue().getDeclaringClass());
+            }
+            String[] labelKeys = Arrays.stream(values).map(choice.labelKey()).toArray(String[]::new);
             property.addMetadata("visualizer", Visualizer.DropdownVisualizer.class);
             property.addMetadata("options", labelKeys);
             property.addMetadata("optionsKey", labelKeys);

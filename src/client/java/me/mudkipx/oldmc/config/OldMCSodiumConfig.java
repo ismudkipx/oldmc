@@ -9,9 +9,6 @@ import net.minecraft.network.chat.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 public final class OldMCSodiumConfig implements ConfigEntryPoint {
     // Sodium invokes all changed bindings before flushing their shared storage handler.
@@ -30,72 +27,20 @@ public final class OldMCSodiumConfig implements ConfigEntryPoint {
         mod.formatVersion(version -> version.split("[-+]", 2)[0]);
         SodiumResources.setIcon(mod);
 
-        var general = page(builder, "general");
-        addToggle(builder, general, OldMCOptions.DIRT_BACKGROUND);
-        addToggle(builder, general, OldMCOptions.DEBUG);
-        addToggle(builder, general, OldMCOptions.SODIUM_F3_RIGHT);
-        if (OldMCOptions.SODIUM_F3_VERSION.available()) {
-            addToggle(builder, general, OldMCOptions.SODIUM_F3_VERSION);
+        for (var group : OptionCatalog.SECTIONS) {
+            var page = builder.createOptionPage().setName(Component.translatable("oldmc.category." + group.key()));
+            for (var setting : group.settings()) {
+                switch (setting) {
+                    case OldMCOptions toggle -> addToggle(builder, page, toggle);
+                    case OptionCatalog.Choice<?> choice -> addChoice(builder, page, choice);
+                }
+            }
+            mod.addPage(page);
         }
-        if (OldMCOptions.IMMEDIATELY_FAST_F3_RIGHT.available()) {
-            addToggle(builder, general, OldMCOptions.IMMEDIATELY_FAST_F3_RIGHT);
-        }
-        if (OldMCOptions.IMMEDIATELY_FAST_F3_VERSION.available()) {
-            addToggle(builder, general, OldMCOptions.IMMEDIATELY_FAST_F3_VERSION);
-        }
-        if (OldMCOptions.IRIS_F3_RIGHT.available()) {
-            addToggle(builder, general, OldMCOptions.IRIS_F3_RIGHT);
-        }
-        if (OldMCOptions.IRIS_F3_VERSION.available()) {
-            addToggle(builder, general, OldMCOptions.IRIS_F3_VERSION);
-        }
-        if (OldMCOptions.VERSION.available()) {
-            addToggle(builder, general, OldMCOptions.VERSION);
-            addChoice(builder, general, "version_format", "oldmc.versionFormat.name", "oldmc.option.versionFormat.tooltip",
-                    VersionFormat.DEFAULT, OldMCOptions::versionFormat, OldMCOptions::setVersionFormat,
-                    VersionFormat::labelKey);
-        }
-        mod.addPage(general);
-
-        var world = page(builder, "world");
-        addToggle(builder, world, OldMCOptions.PERCENTAGE);
-        addToggle(builder, world, OldMCOptions.GRID);
-        mod.addPage(world);
-
-        if (OldMCOptions.CLASSIC_BABY_MOBS.available()) {
-            var mobs = page(builder, "mobs");
-            addToggle(builder, mobs, OldMCOptions.CLASSIC_BABY_MOBS);
-            addToggle(builder, mobs, OldMCOptions.CLASSIC_BABY_SOUNDS);
-            mod.addPage(mobs);
-        }
-
-        var menus = page(builder, "menus");
-        addToggle(builder, menus, OldMCOptions.CLASSIC_CREATE_WORLD);
-        if (OldMCOptions.TITLE_SIDE_BUTTONS.available()) {
-            addToggle(builder, menus, OldMCOptions.TITLE_SIDE_BUTTONS);
-            String key = "oldmc.option.titleFriendButtonPlacement";
-            addChoice(builder, menus, "title_friend_button_placement", key, key + ".tooltip",
-                    TitleFriendPlacement.DEFAULT, OldMCOptions::titleFriendPlacement,
-                    OldMCOptions::setTitleFriendPlacement, value -> "oldmc.placement." + value.key());
-        }
-        if (OldMCOptions.PAUSE_MENU_TEXT.available()) {
-            addToggle(builder, menus, OldMCOptions.PAUSE_MENU_TEXT);
-            String key = "oldmc.option.friendButtonPlacement";
-            addChoice(builder, menus, "friend_button_placement", key, key + ".tooltip",
-                    FriendButtonPlacement.DEFAULT, OldMCOptions::friendPlacement,
-                    OldMCOptions::setFriendPlacement, value -> "oldmc.placement." + value.key());
-        }
-        addToggle(builder, menus, OldMCOptions.REMOVE_FEEDBACK);
-        addToggle(builder, menus, OldMCOptions.REMOVE_PLAYER_REPORTING);
-        mod.addPage(menus);
-    }
-
-    private static OptionPageBuilder page(ConfigBuilder builder, String category) {
-        return builder.createOptionPage().setName(Component.translatable("oldmc.category." + category));
     }
 
     private void addToggle(ConfigBuilder builder, OptionPageBuilder page, OldMCOptions option) {
-        String key = "oldmc.option." + option.key;
+        String key = option.nameKey();
         page.addOption(builder.createBooleanOption(SodiumResources.id(option.name().toLowerCase(Locale.ROOT)))
                 .setName(Component.translatable(key))
                 .setTooltip(Component.translatable(key + ".tooltip"))
@@ -104,15 +49,13 @@ public final class OldMCSodiumConfig implements ConfigEntryPoint {
                 .setStorageHandler(storage));
     }
 
-    private <E extends Enum<E>> void addChoice(ConfigBuilder builder, OptionPageBuilder page, String id,
-                                                String name, String tooltip, E defaultValue, Supplier<E> get,
-                                                Consumer<E> set, Function<E, String> labelKey) {
-        page.addOption(builder.createEnumOption(SodiumResources.id(id), defaultValue.getDeclaringClass())
-                .setName(Component.translatable(name))
-                .setTooltip(Component.translatable(tooltip))
-                .setElementNameProvider(value -> Component.translatable(labelKey.apply(value)))
-                .setDefaultValue(defaultValue)
-                .setBinding(value -> edits.add(() -> set.accept(value)), get)
+    private <E extends Enum<E>> void addChoice(ConfigBuilder builder, OptionPageBuilder page, OptionCatalog.Choice<E> choice) {
+        page.addOption(builder.createEnumOption(SodiumResources.id(choice.sodiumId()), choice.defaultValue().getDeclaringClass())
+                .setName(Component.translatable(choice.nameKey()))
+                .setTooltip(Component.translatable(choice.tooltipKey()))
+                .setElementNameProvider(value -> Component.translatable(choice.labelKey().apply(value)))
+                .setDefaultValue(choice.defaultValue())
+                .setBinding(value -> edits.add(() -> choice.write().accept(value)), choice.read())
                 .setStorageHandler(storage));
     }
 }

@@ -13,26 +13,19 @@ import net.minecraft.client.gui.screens.options.OptionsSubScreen;
 import net.minecraft.network.chat.Component;
 
 import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
 
 public final class OldMCSettingsScreen extends OptionsSubScreen {
     private final EnumMap<OldMCOptions, OptionInstance<Boolean>> controls = new EnumMap<>(OldMCOptions.class);
+    private final Map<OptionCatalog.Choice<?>, Integer> choices = new HashMap<>();
 
     private OldMCOptionList rows;
     private EditBox searchBox;
-    private FriendButtonPlacement friendPlacement = OldMCOptions.friendPlacement();
-    private TitleFriendPlacement titlePlacement = OldMCOptions.titleFriendPlacement();
-    private VersionFormat versionFormat = OldMCOptions.versionFormat();
 
     public OldMCSettingsScreen(Screen parent) {
         super(parent, Minecraft.getInstance().options, Component.translatable("oldmc.settings"));
-        for (var option : OldMCOptions.values()) {
-            if (!option.available()) continue;
-            String key = "oldmc.option." + option.key;
-            var control = OptionInstance.createBoolean(key,
-                    OptionInstance.cachedConstantTooltip(Component.translatable(key + ".tooltip")), option.defaultValue);
-            control.set(option.enabled());
-            controls.put(option, control);
-        }
     }
 
     @Override
@@ -69,120 +62,54 @@ public final class OldMCSettingsScreen extends OptionsSubScreen {
 
     @Override
     protected void addOptions() {
-        var general = rows.addSection("general");
-        addToggle(general, OldMCOptions.DIRT_BACKGROUND);
-        addToggle(general, OldMCOptions.DEBUG);
-        if (controls.containsKey(OldMCOptions.SODIUM_F3_RIGHT)) {
-            addToggle(general, OldMCOptions.SODIUM_F3_RIGHT);
+        for (var group : OptionCatalog.SECTIONS) {
+            var section = rows.addSection(group.key());
+            for (var setting : group.settings()) {
+                switch (setting) {
+                    case OldMCOptions toggle -> addToggle(section, toggle);
+                    case OptionCatalog.Choice<?> choice -> addChoice(section, choice);
+                }
+            }
         }
-        if (controls.containsKey(OldMCOptions.SODIUM_F3_VERSION)) {
-            addToggle(general, OldMCOptions.SODIUM_F3_VERSION);
-        }
-        if (controls.containsKey(OldMCOptions.IMMEDIATELY_FAST_F3_RIGHT)) {
-            addToggle(general, OldMCOptions.IMMEDIATELY_FAST_F3_RIGHT);
-        }
-        if (controls.containsKey(OldMCOptions.IMMEDIATELY_FAST_F3_VERSION)) {
-            addToggle(general, OldMCOptions.IMMEDIATELY_FAST_F3_VERSION);
-        }
-        if (controls.containsKey(OldMCOptions.IRIS_F3_RIGHT)) {
-            addToggle(general, OldMCOptions.IRIS_F3_RIGHT);
-        }
-        if (controls.containsKey(OldMCOptions.IRIS_F3_VERSION)) {
-            addToggle(general, OldMCOptions.IRIS_F3_VERSION);
-        }
-        if (controls.containsKey(OldMCOptions.VERSION)) {
-            addToggle(general, OldMCOptions.VERSION);
-            addVersionFormat(general);
-        }
-
-        var world = rows.addSection("world");
-        addToggle(world, OldMCOptions.PERCENTAGE);
-        addToggle(world, OldMCOptions.GRID);
-
-        if (controls.containsKey(OldMCOptions.CLASSIC_BABY_MOBS)) {
-            var mobs = rows.addSection("mobs");
-            addToggle(mobs, OldMCOptions.CLASSIC_BABY_MOBS);
-            addToggle(mobs, OldMCOptions.CLASSIC_BABY_SOUNDS);
-        }
-
-        var menus = rows.addSection("menus");
-        addToggle(menus, OldMCOptions.CLASSIC_CREATE_WORLD);
-        if (controls.containsKey(OldMCOptions.TITLE_SIDE_BUTTONS)) {
-            addToggle(menus, OldMCOptions.TITLE_SIDE_BUTTONS);
-            addTitleFriendPlacement(menus);
-        }
-        if (controls.containsKey(OldMCOptions.PAUSE_MENU_TEXT)) {
-            addToggle(menus, OldMCOptions.PAUSE_MENU_TEXT);
-            addFriendPlacement(menus);
-        }
-        addToggle(menus, OldMCOptions.REMOVE_FEEDBACK);
-        addToggle(menus, OldMCOptions.REMOVE_PLAYER_REPORTING);
     }
 
     private void addToggle(OldMCOptionList.Section section, OldMCOptions option) {
-        var control = controls.get(option);
+        var control = controls.computeIfAbsent(option, key -> {
+            var instance = OptionInstance.createBoolean(key.nameKey(),
+                    OptionInstance.cachedConstantTooltip(Component.translatable(key.nameKey() + ".tooltip")), key.defaultValue);
+            instance.set(key.enabled());
+            return instance;
+        });
         @SuppressWarnings("unchecked")
         var toggle = (CycleButton<Boolean>) control.createButton(options, 0, 0, OldMCOptionList.VALUE_WIDTH);
-        section.addOption(toggle, "oldmc.option." + option.key, () -> control.get() != option.defaultValue, () -> {
+        section.addOption(toggle, option.nameKey(), () -> control.get() != option.defaultValue, () -> {
             control.set(option.defaultValue);
             toggle.setValue(option.defaultValue);
         });
     }
 
-    private void addVersionFormat(OldMCOptionList.Section section) {
-        var button = Button.builder(formatLabel(), clicked -> {
-            versionFormat = versionFormat.next();
-            clicked.setMessage(formatLabel());
+    private <E extends Enum<E>> void addChoice(OldMCOptionList.Section section, OptionCatalog.Choice<E> choice) {
+        E[] values = choice.values();
+        choices.putIfAbsent(choice, choice.read().get().ordinal());
+        Supplier<Component> label = () -> {
+            E value = values[choices.get(choice)];
+            var text = Component.translatable(choice.labelKey().apply(value));
+            if (choice == OptionCatalog.FORMAT) return Component.translatable("oldmc.option.versionFormat", text);
+            return Component.translatable("options.generic_value", Component.translatable(choice.nameKey()), text);
+        };
+        var button = Button.builder(label.get(), clicked -> {
+            choices.put(choice, (choices.get(choice) + 1) % values.length);
+            clicked.setMessage(label.get());
         }).width(OldMCOptionList.VALUE_WIDTH).build();
-        button.setTooltip(Tooltip.create(Component.translatable("oldmc.option.versionFormat.tooltip")));
-        section.addOption(button, "oldmc.versionFormat.name",
-                () -> versionFormat != VersionFormat.DEFAULT, () -> {
-                    versionFormat = VersionFormat.DEFAULT;
-                    button.setMessage(formatLabel());
-                });
-    }
-
-    private void addTitleFriendPlacement(OldMCOptionList.Section section) {
-        String key = "oldmc.option.titleFriendButtonPlacement";
-        var name = Component.translatable(key);
-        var button = Button.builder(titlePlacementLabel(name), clicked -> {
-            titlePlacement = titlePlacement.next();
-            clicked.setMessage(titlePlacementLabel(name));
-        }).width(OldMCOptionList.VALUE_WIDTH).build();
-        button.setTooltip(Tooltip.create(Component.translatable("oldmc.option.titleFriendButtonPlacement.tooltip")));
-        section.addOption(button, key, () -> titlePlacement != TitleFriendPlacement.DEFAULT, () -> {
-            titlePlacement = TitleFriendPlacement.DEFAULT;
-            button.setMessage(titlePlacementLabel(name));
+        button.setTooltip(Tooltip.create(Component.translatable(choice.tooltipKey())));
+        section.addOption(button, choice.nameKey(), () -> choices.get(choice) != choice.defaultValue().ordinal(), () -> {
+            choices.put(choice, choice.defaultValue().ordinal());
+            button.setMessage(label.get());
         });
     }
 
-    private Component titlePlacementLabel(Component name) {
-        return Component.translatable("options.generic_value", name,
-                Component.translatable("oldmc.placement." + titlePlacement.key()));
-    }
-
-    private void addFriendPlacement(OldMCOptionList.Section section) {
-        String key = "oldmc.option.friendButtonPlacement";
-        var name = Component.translatable(key);
-        var button = Button.builder(friendPlacementLabel(name), clicked -> {
-            friendPlacement = friendPlacement.next();
-            clicked.setMessage(friendPlacementLabel(name));
-        }).width(OldMCOptionList.VALUE_WIDTH).build();
-        button.setTooltip(Tooltip.create(Component.translatable("oldmc.option.friendButtonPlacement.tooltip")));
-        section.addOption(button, key, () -> friendPlacement != FriendButtonPlacement.DEFAULT, () -> {
-            friendPlacement = FriendButtonPlacement.DEFAULT;
-            button.setMessage(friendPlacementLabel(name));
-        });
-    }
-
-    private Component friendPlacementLabel(Component name) {
-        return Component.translatable("options.generic_value", name,
-                Component.translatable("oldmc.placement." + friendPlacement.key()));
-    }
-
-    private Component formatLabel() {
-        return Component.translatable("oldmc.option.versionFormat",
-                Component.translatable(versionFormat.labelKey()));
+    private static <E extends Enum<E>> void applyChoice(OptionCatalog.Choice<E> choice, int index) {
+        choice.write().accept(choice.values()[index]);
     }
 
     @Override
@@ -190,9 +117,7 @@ public final class OldMCSettingsScreen extends OptionsSubScreen {
         super.removed();
         OldMCOptions.applyChanges(() -> {
             controls.forEach((option, control) -> option.set(control.get()));
-            if (controls.containsKey(OldMCOptions.VERSION)) OldMCOptions.setVersionFormat(versionFormat);
-            OldMCOptions.setFriendPlacement(friendPlacement);
-            OldMCOptions.setTitleFriendPlacement(titlePlacement);
+            choices.forEach(OldMCSettingsScreen::applyChoice);
         });
     }
 }

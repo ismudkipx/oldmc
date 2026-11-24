@@ -65,12 +65,10 @@ subprojects {
 
     def metadata = [
         version: project.version.toString(),
-        loader: loader_version,
         minecraft: minecraftRange,
         java: javaRelease
     ]
     tasks.named('processResources') {
-        from(rootProject.file('src/main/resources/icon.png')) { into 'assets/oldmc/textures/gui' }
         inputs.properties(metadata)
         filesMatching('fabric.mod.json') { expand(metadata) }
     }

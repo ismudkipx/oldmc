@@ -3,11 +3,11 @@ package me.mudkipx.oldmc.mixin;
 import me.mudkipx.oldmc.config.OldMCOptions;
 import me.mudkipx.oldmc.config.TitleFriendPlacement;
 import me.mudkipx.oldmc.gui.PauseMenuTextButton;
+import me.mudkipx.oldmc.screen.WidgetLabels;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.contents.TranslatableContents;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,8 +24,7 @@ abstract class TitleMenuMixin extends Screen {
     private AbstractButton oldmc$findButton(String key) {
         for (var child : children()) {
             if (child instanceof AbstractButton button
-                    && button.getMessage().getContents() instanceof TranslatableContents label
-                    && key.equals(label.getKey())) return button;
+                    && key.equals(WidgetLabels.key(button.getMessage()))) return button;
         }
         return null;
     }

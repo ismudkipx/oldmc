@@ -14,15 +14,11 @@ public enum VersionFormat {
         return "oldmc.format." + key;
     }
 
-    VersionFormat next() {
-        var choices = values();
-        return choices[(ordinal() + 1) % choices.length];
-    }
-
     static VersionFormat fromKey(String key) {
         for (var format : values()) {
             if (format.key.equals(key)) return format;
         }
+        OldMCOptions.warnUnknownChoice("versionFormat");
         return DEFAULT;
     }
 }

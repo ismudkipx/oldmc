@@ -14,12 +14,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.charset.CharacterCodingException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-public enum OldMCOptions {
+public enum OldMCOptions implements OptionCatalog.Setting {
     PERCENTAGE("percentage"), GRID("grid"), DIRT_BACKGROUND("dirtBackground"), DEBUG("debug"),
     SODIUM_F3_RIGHT("sodiumF3Right"), SODIUM_F3_VERSION("sodiumF3Version"),
     IMMEDIATELY_FAST_F3_RIGHT("immediatelyFastF3Right"), IMMEDIATELY_FAST_F3_VERSION("immediatelyFastF3Version"),
@@ -34,29 +35,33 @@ public enum OldMCOptions {
     private static final Path FILE = FabricLoader.getInstance().getConfigDir().resolve("oldmc.json");
     private static VersionFormat versionFormat = VersionFormat.DEFAULT;
     private static boolean dirty;
+    private static boolean preserveUnreadConfig;
     private static final boolean HAS_SODIUM = FabricLoader.getInstance().isModLoaded("sodium");
     private static final boolean HAS_IMMEDIATELY_FAST = FabricLoader.getInstance().isModLoaded("immediatelyfast");
     private static final boolean HAS_IRIS = FabricLoader.getInstance().isModLoaded("iris");
-    private static final boolean HAS_YEAR_VERSION = FabricLoader.getInstance().getModContainer("minecraft")
-            .orElseThrow().getMetadata().getVersion().getFriendlyString().startsWith("26.");
-    public static final boolean HAS_PAUSE_MENU_ICONS = FabricLoader.getInstance().getModContainer("minecraft")
-            .map(mod -> mod.getMetadata().getVersion())
-            .filter(SemanticVersion.class::isInstance).map(SemanticVersion.class::cast)
-            .map(v -> v.getVersionComponent(0) > 26 || v.getVersionComponent(0) == 26 && v.getVersionComponent(1) >= 2)
-            .orElse(false);
+    static final String GAME_VERSION;
+    private static final boolean HAS_YEAR_VERSION;
+    public static final boolean HAS_PAUSE_MENU_ICONS;
+    static {
+        var version = FabricLoader.getInstance().getModContainer("minecraft").orElseThrow().getMetadata().getVersion();
+        GAME_VERSION = version.getFriendlyString();
+        HAS_YEAR_VERSION = GAME_VERSION.startsWith("26.");
+        HAS_PAUSE_MENU_ICONS = version instanceof SemanticVersion && hasPauseMenuIcons((SemanticVersion) version);
+    }
+
+    private static boolean hasPauseMenuIcons(SemanticVersion version) {
+        int major = version.getVersionComponent(0);
+        return major > 26 || major == 26 && version.getVersionComponent(1) >= 2;
+    }
+
     private static FriendButtonPlacement friendPlacement = FriendButtonPlacement.DEFAULT;
     private static TitleFriendPlacement titleFriendPlacement = TitleFriendPlacement.DEFAULT;
     public final String key;
-    public final boolean defaultValue;
-    private boolean enabled;
+    public final boolean defaultValue = true;
+    private boolean enabled = defaultValue;
 
     OldMCOptions(String key) {
-        this(key, true);
-    }
-
-    OldMCOptions(String key, boolean defaultValue) {
         this.key = key;
-        this.enabled = this.defaultValue = defaultValue;
     }
 
     public static FriendButtonPlacement friendPlacement() {
@@ -92,7 +97,12 @@ public enum OldMCOptions {
         }
     }
 
-    boolean available() {
+    String nameKey() {
+        return "oldmc.option." + key;
+    }
+
+    @Override
+    public boolean available() {
         return switch (this) {
             case SODIUM_F3_RIGHT -> HAS_SODIUM;
             case VERSION, CLASSIC_BABY_MOBS, CLASSIC_BABY_SOUNDS -> HAS_YEAR_VERSION;
@@ -123,10 +133,7 @@ public enum OldMCOptions {
 
     private static void load() {
         try {
-            JsonElement data;
-            try (var reader = Files.newBufferedReader(FILE)) {
-                data = GSON.fromJson(reader, JsonElement.class);
-            }
+            JsonElement data = GSON.fromJson(Files.readString(FILE), JsonElement.class);
             if (data != null && !data.isJsonNull()) {
                 if (!data.isJsonObject()) throw new JsonParseException("Expected a configuration object");
                 applyConfig(data.getAsJsonObject());
@@ -135,8 +142,12 @@ public enum OldMCOptions {
             LOGGER.warn("[OldMC] Empty configuration file; reset to default values.");
         } catch (NoSuchFileException ignored) {
             // First launch: create the default file without a warning.
-        } catch (IOException | JsonParseException e) {
-            LOGGER.warn("[OldMC] Failed to load configuration file; reset to default values.");
+        } catch (CharacterCodingException | JsonParseException e) {
+            LOGGER.warn("[OldMC] Failed to load configuration file; reset to default values. {}", e.getMessage());
+        } catch (IOException e) {
+            preserveUnreadConfig = true;
+            LOGGER.warn("[OldMC] Could not read {}. Using defaults for this session; changes will not be saved.", FILE, e);
+            return;
         }
         for (var option : values()) option.enabled = option.defaultValue;
         friendPlacement = FriendButtonPlacement.DEFAULT;
@@ -155,13 +166,32 @@ public enum OldMCOptions {
         if (format != null) {
             versionFormat = VersionFormat.fromKey(format);
         } else {
-            Boolean legacy = GSON.fromJson(data.get("majorVersionFormat"), Boolean.class);
+            Boolean legacy = readBoolean(data, "majorVersionFormat");
             if (legacy != null) versionFormat = legacy ? VersionFormat.MAJOR : VersionFormat.YEAR;
         }
         for (var option : values()) {
-            Boolean value = GSON.fromJson(data.get(option.key), Boolean.class);
+            Boolean value = readBoolean(data, option.key);
             if (value != null) option.enabled = value;
         }
+    }
+
+    private static Boolean readBoolean(JsonObject data, String key) {
+        var value = data.get(key);
+        if (value == null || value.isJsonNull()) return null;
+        if (value.isJsonPrimitive()) {
+            var primitive = value.getAsJsonPrimitive();
+            if (primitive.isBoolean()) return primitive.getAsBoolean();
+            // Previous versions also accepted the strings "true" and "false".
+            if (primitive.isString()) {
+                if ("true".equalsIgnoreCase(primitive.getAsString())) return true;
+                if ("false".equalsIgnoreCase(primitive.getAsString())) return false;
+            }
+        }
+        throw new JsonParseException("Expected a boolean for " + key);
+    }
+
+    static void warnUnknownChoice(String key) {
+        LOGGER.warn("[OldMC] Unknown value for {}; using its default.", key);
     }
 
     private static String readString(JsonObject data, String key) {
@@ -191,7 +221,7 @@ public enum OldMCOptions {
     }
 
     static synchronized void saveIfDirty() {
-        if (!dirty) return;
+        if (!dirty || preserveUnreadConfig) return;
         var data = new JsonObject();
         data.addProperty("friendButtonPlacement", friendPlacement.key());
         data.addProperty("titleFriendButtonPlacement", titleFriendPlacement.key());

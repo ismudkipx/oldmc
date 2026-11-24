@@ -3,6 +3,7 @@ package me.mudkipx.oldmc.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.vertex.PoseStack;
+import me.mudkipx.oldmc.config.OldMCOptions;
 import me.mudkipx.oldmc.render.ClassicBabyRenderers;
 import me.mudkipx.oldmc.render.ClassicBabySubmission;
 import me.mudkipx.oldmc.render.ClassicCoat;
@@ -34,6 +35,10 @@ abstract class BabyLivingRendererMixin {
     @Inject(method = "extractRenderState(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;F)V", at = @At("RETURN"))
     private void oldmc$extractCoat(LivingEntity entity, LivingEntityRenderState state, float partialTick, CallbackInfo ci) {
         if (!(state instanceof ClassicCoat coat) || !state.isBaby) return;
+        if (!OldMCOptions.CLASSIC_BABY_MOBS.enabled()) {
+            coat.oldmc$setClassicCoat(null);
+            return;
+        }
         if (entity instanceof Cat cat) {
             coat.oldmc$setClassicCoat(cat.getVariant().value().assetInfo(false).texturePath());
         } else if (entity instanceof Wolf wolf) {

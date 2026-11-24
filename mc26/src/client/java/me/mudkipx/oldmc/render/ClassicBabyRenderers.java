@@ -19,6 +19,9 @@ public final class ClassicBabyRenderers {
             "hoglin", "horse", "husk", "llama", "mooshroom", "mule", "ocelot", "panda", "pig", "piglin",
             "polar_bear", "rabbit", "sheep", "skeleton_horse", "squid", "strider", "trader_llama",
             "turtle", "villager", "wolf", "zoglin", "zombie", "zombie_horse", "zombie_villager", "zombified_piglin");
+    private static final Map<Identifier, Identifier> RABBIT_TEXTURES = Map.ofEntries(
+            rabbitTexture("black"), rabbitTexture("brown"), rabbitTexture("caerbannog"), rabbitTexture("gold"),
+            rabbitTexture("salt"), rabbitTexture("toast"), rabbitTexture("white"), rabbitTexture("white_splotched"));
     private static final ThreadLocal<Boolean> BAKING = new ThreadLocal<>();
     private static volatile Map<EntityRenderer<?, ?>, Entry> renderers = Map.of();
 
@@ -69,14 +72,14 @@ public final class ClassicBabyRenderers {
         return entry.renderer;
     }
 
+    private static Map.Entry<Identifier, Identifier> rabbitTexture(String coat) {
+        String file = coat + ".png";
+        return Map.entry(Identifier.withDefaultNamespace("textures/entity/rabbit/rabbit_" + file),
+                Identifier.fromNamespaceAndPath("oldmc", "textures/entity/rabbit/" + file));
+    }
+
     public static Identifier texture(Identifier texture) {
-        if (!texture.getNamespace().equals("minecraft")) return texture;
-        String path = texture.getPath();
-        String rabbit = "textures/entity/rabbit/rabbit_";
-        if (path.startsWith(rabbit)) {
-            return Identifier.fromNamespaceAndPath("oldmc", "textures/entity/rabbit/" + path.substring(rabbit.length()));
-        }
-        return texture;
+        return RABBIT_TEXTURES.getOrDefault(texture, texture);
     }
 
     private ClassicBabyRenderers() {}

@@ -1,10 +1,9 @@
 package me.mudkipx.oldmc.mixin;
 
-import java.util.ArrayList;
-import java.util.List;
 import me.mudkipx.oldmc.config.OldMCOptions;
 import me.mudkipx.oldmc.screen.ClassicWorldForm;
 import me.mudkipx.oldmc.screen.ClassicWorldView;
+import me.mudkipx.oldmc.screen.WidgetLabels;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.tabs.TabNavigationBar;
 import net.minecraft.client.gui.screens.Screen;
@@ -47,16 +46,16 @@ abstract class ClassicCreateWorldMixin extends Screen implements ClassicWorldVie
         if (!OldMCOptions.CLASSIC_CREATE_WORLD.enabled()) return;
         TabNavigationBar bar = null;
         Button create = null, cancel = null;
-        List<Button> footer = new ArrayList<>();
         for (var child : children()) {
             if (child instanceof TabNavigationBar tabs) bar = tabs;
             if (child instanceof Button button) {
-                if (ClassicWorldForm.hasLabel(button, "selectWorld.create")) {
+                String key = WidgetLabels.key(button.getMessage());
+                if (key.equals("selectWorld.create")) {
+                    if (create != null) return;
                     create = button;
-                    footer.add(button);
-                } else if (ClassicWorldForm.hasLabel(button, "gui.cancel")) {
+                } else if (key.equals("gui.cancel")) {
+                    if (cancel != null) return;
                     cancel = button;
-                    footer.add(button);
                 }
             }
         }
@@ -66,7 +65,8 @@ abstract class ClassicCreateWorldMixin extends Screen implements ClassicWorldVie
         clearFocus();
         removeWidget(bar);
         bar.getTabs().forEach(tab -> tab.visitChildren(this::removeWidget));
-        footer.forEach(this::removeWidget);
+        removeWidget(create);
+        removeWidget(cancel);
         oldmc$form.visitWidgets(this::addRenderableWidget);
         oldmc$form.position(width, height);
         setFocused(oldmc$form.show(oldmc$more));

@@ -11,15 +11,11 @@ public enum FriendButtonPlacement {
         return name().toLowerCase(Locale.ROOT);
     }
 
-    public FriendButtonPlacement next() {
-        var choices = values();
-        return choices[(ordinal() + 1) % choices.length];
-    }
-
     static FriendButtonPlacement fromKey(String key) {
         for (var placement : values()) {
             if (placement.key().equals(key)) return placement;
         }
+        OldMCOptions.warnUnknownChoice("friendButtonPlacement");
         return DEFAULT;
     }
 }

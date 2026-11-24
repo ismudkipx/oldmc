@@ -88,10 +88,12 @@ final class OldMCOptionList extends ContainerObjectSelectionList<OldMCOptionList
     abstract static class HeadingRow extends ListEntry {
         final Font font;
         final Component name;
+        private final List<NarratableEntry> narration;
 
         HeadingRow(Font font, Component name) {
             this.font = font;
             this.name = name;
+            narration = List.of(new HeadingNarration(name));
         }
 
         @Override
@@ -101,7 +103,7 @@ final class OldMCOptionList extends ContainerObjectSelectionList<OldMCOptionList
 
         @Override
         public List<NarratableEntry> narratables() {
-            return List.of(new HeadingNarration(name));
+            return narration;
         }
     }
 

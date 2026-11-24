@@ -5,12 +5,12 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import me.mudkipx.oldmc.config.OldMCModMenu;
 import me.mudkipx.oldmc.config.OldMCOptions;
 import net.fabricmc.loader.api.FabricLoader;
+import me.mudkipx.oldmc.screen.WidgetLabels;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.contents.TranslatableContents;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -66,9 +66,10 @@ abstract class PauseFeedbackMixin {
     @WrapOperation(method = "createPauseMenu", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/gui/layouts/GridLayout$RowHelper;addChild(Lnet/minecraft/client/gui/layouts/LayoutElement;)Lnet/minecraft/client/gui/layouts/LayoutElement;"))
     private LayoutElement oldmc$pauseButton(GridLayout.RowHelper row, LayoutElement item, Operation<LayoutElement> original) {
-        if (item instanceof Button button && button.getMessage().getContents() instanceof TranslatableContents label) {
-            if (OldMCOptions.REMOVE_PLAYER_REPORTING.enabled() && label.getKey().equals("menu.playerReporting")) return item;
-            if (oldmc$iconAnchor != null && oldmc$iconRowButton == null && label.getKey().equals("menu.options")) {
+        if (item instanceof Button button) {
+            String key = WidgetLabels.key(button.getMessage());
+            if (OldMCOptions.REMOVE_PLAYER_REPORTING.enabled() && key.equals("menu.playerReporting")) return item;
+            if (oldmc$iconAnchor != null && oldmc$iconRowButton == null && key.equals("menu.options")) {
                 oldmc$iconRowButton = original.call(row, item);
                 return oldmc$iconRowButton;
             }

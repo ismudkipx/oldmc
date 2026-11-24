@@ -9,7 +9,7 @@
   ],
   "environment": "client",
   "license": "MIT",
-  "icon": "icon.png",
+  "icon": "assets/oldmc/textures/gui/icon.png",
   "mixins": [
     {
       "config": "oldmc.client.mixins.json",

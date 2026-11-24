@@ -1,6 +1,7 @@
 package me.mudkipx.oldmc.screen;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
@@ -9,13 +10,12 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.tabs.Tab;
 import net.minecraft.client.gui.screens.worldselection.WorldCreationUiState;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.world.Difficulty;
 
 /** The two pages share the current game's world creation state and vanilla action buttons. */
 public final class ClassicWorldForm {
@@ -54,46 +54,46 @@ public final class ClassicWorldForm {
     public static ClassicWorldForm fromTabs(List<Tab> tabs, WorldCreationUiState state,
                                             Button create, Button cancel, Runnable switchPage) {
         if (tabs.size() != 3 || create == null || cancel == null) return null;
-        List<AbstractWidget> widgets = new ArrayList<>();
-        tabs.forEach(tab -> tab.visitChildren(widgets::add));
-        EditBox name = null, seed = null;
-        AbstractWidget mode = null, difficulty = null, commands = null, type = null;
-        for (AbstractWidget widget : widgets) {
-            if (widget instanceof EditBox box) {
-                if (hasLabel(box, "selectWorld.enterName")) name = box;
-                if (hasLabel(box, "selectWorld.enterSeed")) seed = box;
-            } else if (widget instanceof CycleButton<?> cycle) {
-                Object value = cycle.getValue();
-                if (value instanceof WorldCreationUiState.SelectedGameMode) mode = cycle;
-                if (value instanceof Difficulty) difficulty = cycle;
-                if (value instanceof WorldCreationUiState.WorldTypeEntry) type = cycle;
+        var controls = new HashMap<String, AbstractWidget>();
+        for (Tab tab : tabs) {
+            List<AbstractWidget> widgets = new ArrayList<>();
+            tab.visitChildren(widgets::add);
+            String previousLabel = "";
+            for (AbstractWidget widget : widgets) {
+                String key = WidgetLabels.optionKey(widget.getMessage());
+                if (widget instanceof StringWidget && (key.equals("selectWorld.enterName")
+                        || key.equals("selectWorld.enterSeed") || key.equals("selectWorld.mapFeatures")
+                        || key.equals("selectWorld.bonusItems"))) {
+                    previousLabel = key;
+                    continue;
+                }
+                // Vanilla's two World-tab switches display only On/Off after a separate text label.
+                if (widget instanceof CycleButton<?> cycle && cycle.getValue() instanceof Boolean
+                        && (key.equals("options.on") || key.equals("options.off"))
+                        && (previousLabel.equals("selectWorld.mapFeatures") || previousLabel.equals("selectWorld.bonusItems"))) {
+                    key = previousLabel;
+                }
+                previousLabel = "";
+                if (controls.putIfAbsent(key, widget) != null) return null;
             }
         }
-        List<AbstractWidget> game = new ArrayList<>();
-        tabs.getFirst().visitChildren(game::add);
-        for (AbstractWidget widget : game) {
-            if (widget instanceof CycleButton<?> cycle && cycle.getValue() instanceof Boolean) commands = cycle;
-        }
-        Button customize = button(widgets, "selectWorld.customizeType");
-        Button rules = button(widgets, "selectWorld.gameRules");
-        Button packs = button(widgets, "selectWorld.dataPacks");
-        Button experiments = button(widgets, "selectWorld.experiments");
-        if (name == null || seed == null || mode == null || difficulty == null || commands == null ||
-                type == null || customize == null || rules == null || packs == null || experiments == null) return null;
+        // Preserve the original tabs when another mod adds controls we cannot represent.
+        if (!(controls.remove("selectWorld.enterName") instanceof EditBox name)
+                || !(controls.remove("selectWorld.enterSeed") instanceof EditBox seed)
+                || !(controls.remove("selectWorld.gameMode") instanceof CycleButton<?> mode)
+                || !(controls.remove("options.difficulty") instanceof CycleButton<?> difficulty)
+                || !(controls.remove("selectWorld.allowCommands") instanceof CycleButton<?> commands)
+                || !(commands.getValue() instanceof Boolean)
+                || !(controls.remove("selectWorld.mapType") instanceof CycleButton<?> type)
+                || !(controls.remove("selectWorld.customizeType") instanceof Button customize)
+                || !(controls.remove("selectWorld.dataPacks") instanceof Button packs)
+                || !(controls.remove("selectWorld.gameRules") instanceof Button rules)
+                || !(controls.remove("selectWorld.experiments") instanceof Button experiments)
+                || !(controls.remove("selectWorld.mapFeatures") instanceof CycleButton<?>)
+                || !(controls.remove("selectWorld.bonusItems") instanceof CycleButton<?>)
+                || !controls.isEmpty()) return null;
         return new ClassicWorldForm(state, name, seed, mode, difficulty, commands, type, customize,
                 packs, rules, experiments, create, cancel, switchPage);
-    }
-
-    public static boolean hasLabel(AbstractWidget widget, String key) {
-        // Vanilla adds a gray style to inactive button labels.
-        return widget.getMessage().getContents() instanceof TranslatableContents label && key.equals(label.getKey());
-    }
-
-    private static Button button(List<AbstractWidget> widgets, String key) {
-        for (var widget : widgets) {
-            if (widget instanceof Button button && hasLabel(button, key)) return button;
-        }
-        return null;
     }
 
     public void visitWidgets(Consumer<AbstractWidget> consumer) {

@@ -110,9 +110,14 @@ public final class ClassicDebugLayout {
     }
 
     private void addTarget(List<String> out, DebugItem... items) {
-        List<String> target = new ArrayList<>();
-        append(target, items);
-        section(out, target);
+        boolean first = true;
+        for (DebugItem item : items) {
+            List<String> part = lines(item);
+            if (part.isEmpty()) continue;
+            if (first && !out.isEmpty()) out.add("");
+            out.addAll(part);
+            first = false;
+        }
     }
 
     private void append(List<String> out, DebugItem... items) {

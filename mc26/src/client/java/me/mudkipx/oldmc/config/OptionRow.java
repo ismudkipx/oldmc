@@ -1,6 +1,5 @@
 package me.mudkipx.oldmc.config;
 
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -13,8 +12,7 @@ import java.util.List;
 import java.util.function.BooleanSupplier;
 
 final class OptionRow extends OldMCOptionList.Row {
-    private static final boolean FOCUSABLE_HEADINGS = FabricLoader.getInstance().getModContainer("minecraft")
-            .orElseThrow().getMetadata().getVersion().getFriendlyString().equals("26.3");
+    private static final boolean FOCUSABLE_HEADINGS = OldMCOptions.GAME_VERSION.equals("26.3");
     private static final Identifier RESET = Identifier.fromNamespaceAndPath("oldmc", "widget/reset");
     private static final Identifier DISABLED = Identifier.fromNamespaceAndPath("oldmc", "widget/reset_disabled");
     static final WidgetSprites RESET_SPRITES = new WidgetSprites(RESET, DISABLED, RESET);
