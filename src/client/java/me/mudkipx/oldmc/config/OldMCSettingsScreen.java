@@ -73,6 +73,10 @@ public final class OldMCSettingsScreen extends OptionsSubScreen {
         addToggle(world, OldMCOptions.PERCENTAGE);
         addToggle(world, OldMCOptions.GRID);
 
+        if (controls.containsKey(OldMCOptions.CLASSIC_BABY_MOBS)) {
+            addToggle(rows.addSection("mobs"), OldMCOptions.CLASSIC_BABY_MOBS);
+        }
+
         var general = rows.addSection("general");
         addToggle(general, OldMCOptions.DIRT_BACKGROUND);
         addToggle(general, OldMCOptions.DEBUG);

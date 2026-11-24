@@ -1,0 +1,251 @@
+{
+  "models": {
+    "minecraft:armadillo#main": {
+      "": {"pose":[0.0,9.6064,0.0,0.0,0.0,0.0,0.6,0.6,0.6]}
+    },
+    "minecraft:axolotl#main": {
+      "": {"pose":[0.0,12.008,0.0,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "body": {"pose":[0.0,20.0,5.0,0.0,0.0,0.0,1.0,1.0,1.0]}
+    },
+    "minecraft:bee#main": {
+      "": {"pose":[0.0,12.008,0.0,0.0,0.0,0.0,0.5,0.5,0.5]}
+    },
+    "minecraft:camel#main": {
+      "": {"pose":[0.0,13.2088,0.0,0.0,0.0,0.0,0.45,0.45,0.45]}
+    },
+    "minecraft:cat#collar": {
+      "body": {"pose":[0.0,18.0,-5.0,1.5707964,0.0,0.0,0.5,0.5,0.5]},
+      "head": {"pose":[0.0,18.75,-3.75,0.0,0.0,0.0,0.75,0.75,0.75]},
+      "left_front_leg": {"pose":[0.6,19.05,-2.5,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "left_hind_leg": {"pose":[0.55,21.0,2.5,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "right_front_leg": {"pose":[-0.6,19.05,-2.5,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "right_hind_leg": {"pose":[-0.55,21.0,2.5,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "tail1": {"pose":[0.0,19.5,4.0,0.9,0.0,0.0,0.5,0.5,0.5]},
+      "tail2": {"pose":[0.0,22.0,7.0,0.0,0.0,0.0,0.5,0.5,0.5]}
+    },
+    "minecraft:chicken#main": {
+      "body": {"pose":[0.0,20.100502,0.0,1.5707964,0.0,0.0,0.5025126,0.5025126,0.5025126]},
+      "head": {"pose":[0.0,20.0,-2.0,0.0,0.0,0.0,1.0,1.0,1.0]},
+      "left_leg": {"pose":[0.5025126,21.60804,0.5025126,0.0,0.0,0.0,0.5025126,0.5025126,0.5025126]},
+      "left_wing": {"pose":[2.0100503,18.592966,0.0,0.0,0.0,0.0,0.5025126,0.5025126,0.5025126]},
+      "right_leg": {"pose":[-1.0050251,21.60804,0.5025126,0.0,0.0,0.0,0.5025126,0.5025126,0.5025126]},
+      "right_wing": {"pose":[-2.0100503,18.592966,0.0,0.0,0.0,0.0,0.5025126,0.5025126,0.5025126]}
+    },
+    "minecraft:cold_cow#main": {
+      "body": {"pose":[0.0,14.5,1.0,1.5707964,0.0,0.0,0.5,0.5,0.5]},
+      "head": {"pose":[0.0,12.0,-2.0,0.0,0.0,0.0,1.0,1.0,1.0]},
+      "left_front_leg": {"pose":[2.0,18.0,-2.5,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "left_hind_leg": {"pose":[2.0,18.0,3.5,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "right_front_leg": {"pose":[-2.0,18.0,-2.5,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "right_hind_leg": {"pose":[-2.0,18.0,3.5,0.0,0.0,0.0,0.5,0.5,0.5]}
+    },
+    "minecraft:cold_pig#main": {
+      "body": {"pose":[0.0,17.5,1.0,1.5707964,0.0,0.0,0.5,0.5,0.5]},
+      "head": {"pose":[0.0,16.0,-2.0,0.0,0.0,0.0,1.0,1.0,1.0]},
+      "left_front_leg": {"pose":[1.5,21.0,-2.5,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "left_hind_leg": {"pose":[1.5,21.0,3.5,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "right_front_leg": {"pose":[-1.5,21.0,-2.5,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "right_hind_leg": {"pose":[-1.5,21.0,3.5,0.0,0.0,0.0,0.5,0.5,0.5]}
+    },
+    "minecraft:donkey#main": {
+      "body": {"pose":[0.0,15.5,2.5,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "head_parts": {"pose":[0.0,11.110297,-5.852156,0.5235988,0.0,0.0,0.5500147,0.5500147,0.5500147]},
+      "left_front_leg": {"pose":[2.0,17.0,-5.0,0.0,0.0,0.0,0.5,0.5,0.5],"boxes":[[48,21,-3.0,-1.01,-1.9,4.0,11.0,4.0,0.0,5.5,0.0,true,64.0,64.0]]},
+      "left_hind_leg": {"pose":[2.0,17.0,3.5,0.0,0.0,0.0,0.5,0.5,0.5],"boxes":[[48,21,-3.0,-1.01,-1.0,4.0,11.0,4.0,0.0,5.5,0.0,true,64.0,64.0]]},
+      "right_front_leg": {"pose":[-2.0,17.0,-5.0,0.0,0.0,0.0,0.5,0.5,0.5],"boxes":[[48,21,-1.0,-1.01,-1.9,4.0,11.0,4.0,0.0,5.5,0.0,false,64.0,64.0]]},
+      "right_hind_leg": {"pose":[-2.0,17.0,3.5,0.0,0.0,0.0,0.5,0.5,0.5],"boxes":[[48,21,-1.0,-1.01,-1.0,4.0,11.0,4.0,0.0,5.5,0.0,false,64.0,64.0]]}
+    },
+    "minecraft:drowned#boots": {
+      "body": {"pose":[0.0,12.0,0.0,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "head": {"pose":[0.0,12.0,0.0,0.0,0.0,0.0,0.75,0.75,0.75]},
+      "left_arm": {"pose":[2.5,13.0,0.0,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "left_leg": {"pose":[0.95,18.0,0.0,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "right_arm": {"pose":[-2.5,13.0,0.0,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "right_leg": {"pose":[-0.95,18.0,0.0,0.0,0.0,0.0,0.5,0.5,0.5]}
+    },
+    "minecraft:fox#main": {
+      "body": {"pose":[0.0,20.0,-3.0,1.5707964,0.0,0.0,0.5,0.5,0.5]},
+      "head": {"pose":[-0.75,18.375,0.26249993,0.0,0.0,0.0,0.75,0.75,0.75]},
+      "left_front_leg": {"pose":[-0.5,20.75,0.0,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "left_hind_leg": {"pose":[-0.5,20.75,3.5,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "right_front_leg": {"pose":[-2.5,20.75,0.0,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "right_hind_leg": {"pose":[-2.5,20.75,3.5,0.0,0.0,0.0,0.5,0.5,0.5]}
+    },
+    "minecraft:goat#main": {
+      "body": {"pose":[0.0,24.0,0.0,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "head": {"pose":[0.6,19.800001,0.6,0.0,0.0,0.0,0.6,0.6,0.6]},
+      "left_front_leg": {"pose":[0.5,19.0,-3.0,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "left_hind_leg": {"pose":[0.5,19.0,2.0,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "right_front_leg": {"pose":[-1.5,19.0,-3.0,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "right_hind_leg": {"pose":[-1.5,19.0,2.0,0.0,0.0,0.0,0.5,0.5,0.5]}
+    },
+    "minecraft:hoglin#main": {
+      "body": {"pose":[0.0,15.5,0.0,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "body/mane": {"pose":[0.0,-14.0,-3.0,0.0,0.0,0.0,1.0,1.0,1.0]},
+      "head": {"pose":[0.0,7.8947372,-4.736842,0.87266463,0.0,0.0,0.7894737,0.7894737,0.7894737]},
+      "left_front_leg": {"pose":[2.0,17.0,-4.25,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "left_hind_leg": {"pose":[2.5,18.5,5.0,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "right_front_leg": {"pose":[-2.0,17.0,-4.25,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "right_hind_leg": {"pose":[-2.5,18.5,5.0,0.0,0.0,0.0,0.5,0.5,0.5]}
+    },
+    "minecraft:horse_armor#main": {
+      "body": {"pose":[0.0,15.5,2.5,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "head_parts": {"pose":[0.0,11.110297,-5.852156,0.5235988,0.0,0.0,0.5500147,0.5500147,0.5500147]},
+      "left_front_leg": {"pose":[2.0,17.0,-5.0,0.0,0.0,0.0,0.5,0.5,0.5],"boxes":[[48,21,-3.0,-1.01,-1.9,4.0,11.0,4.0,0.1,5.6,0.1,true,64.0,64.0]]},
+      "left_hind_leg": {"pose":[2.0,17.0,3.5,0.0,0.0,0.0,0.5,0.5,0.5],"boxes":[[48,21,-3.0,-1.01,-1.0,4.0,11.0,4.0,0.1,5.6,0.1,true,64.0,64.0]]},
+      "right_front_leg": {"pose":[-2.0,17.0,-5.0,0.0,0.0,0.0,0.5,0.5,0.5],"boxes":[[48,21,-1.0,-1.01,-1.9,4.0,11.0,4.0,0.1,5.6,0.1,false,64.0,64.0]]},
+      "right_hind_leg": {"pose":[-2.0,17.0,3.5,0.0,0.0,0.0,0.5,0.5,0.5],"boxes":[[48,21,-1.0,-1.01,-1.0,4.0,11.0,4.0,0.1,5.6,0.1,false,64.0,64.0]]}
+    },
+    "minecraft:llama#decor": {
+      "body": {"pose":[0.0,17.272726,0.9090909,1.5707964,0.0,0.0,0.625,0.45454544,0.45454544]},
+      "head": {"pose":[0.0,18.181818,-1.968254,0.0,0.0,0.0,0.71428573,0.64935064,0.7936508]},
+      "left_chest": {"pose":[2.5,14.876032,1.3636363,0.0,1.5707964,0.0,0.45454544,0.41322312,0.45454544]},
+      "left_front_leg": {"pose":[1.590909,17.768595,-2.2727273,0.0,0.0,0.0,0.45454544,0.41322312,0.45454544]},
+      "left_hind_leg": {"pose":[1.590909,17.768595,2.7272725,0.0,0.0,0.0,0.45454544,0.41322312,0.45454544]},
+      "right_chest": {"pose":[-3.8636363,14.876032,1.3636363,0.0,1.5707964,0.0,0.45454544,0.41322312,0.45454544]},
+      "right_front_leg": {"pose":[-1.590909,17.768595,-2.2727273,0.0,0.0,0.0,0.45454544,0.41322312,0.45454544]},
+      "right_hind_leg": {"pose":[-1.590909,17.768595,2.7272725,0.0,0.0,0.0,0.45454544,0.41322312,0.45454544]}
+    },
+    "minecraft:panda#main": {
+      "body": {"pose":[0.0,19.666668,0.0,1.5707964,0.0,0.0,0.33333334,0.33333334,0.33333334]},
+      "head": {"pose":[0.0,19.166666,-6.777777,0.0,0.0,0.0,0.5555555,0.5555555,0.5555555]},
+      "left_front_leg": {"pose":[1.8333334,21.333334,-3.0,0.0,0.0,0.0,0.33333334,0.33333334,0.33333334]},
+      "left_hind_leg": {"pose":[1.8333334,21.333334,3.0,0.0,0.0,0.0,0.33333334,0.33333334,0.33333334]},
+      "right_front_leg": {"pose":[-1.8333334,21.333334,-3.0,0.0,0.0,0.0,0.33333334,0.33333334,0.33333334]},
+      "right_hind_leg": {"pose":[-1.8333334,21.333334,3.0,0.0,0.0,0.0,0.33333334,0.33333334,0.33333334]}
+    },
+    "minecraft:polar_bear#main": {
+      "body": {"pose":[-1.0,16.5,6.0,1.5707964,0.0,0.0,0.5,0.5,0.5]},
+      "head": {"pose":[0.0,17.333334,-8.0,0.0,0.0,0.0,0.6666667,0.6666667,0.6666667]},
+      "left_front_leg": {"pose":[1.75,19.0,-4.0,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "left_hind_leg": {"pose":[2.25,19.0,3.0,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "right_front_leg": {"pose":[-1.75,19.0,-4.0,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "right_hind_leg": {"pose":[-2.25,19.0,3.0,0.0,0.0,0.0,0.5,0.5,0.5]}
+    },
+    "minecraft:rabbit#main": {
+      "backlegs/left_hind_leg/left_haunch": {"boxes":[]},
+      "backlegs/right_hind_leg/right_haunch": {"boxes":[]},
+      "body": {"pose":[0.0,22.0,3.2,-0.34906584,0.0,0.0,0.4,0.4,0.4],"boxes":[[0,0,-3.0,-2.0,-10.0,6.0,5.0,10.0,0.0,0.0,0.0,false,64.0,32.0]]},
+      "body/frontlegs/left_front_leg": {"boxes":[]},
+      "body/frontlegs/right_front_leg": {"boxes":[]},
+      "body/head": {"boxes":[]},
+      "body/head/left_ear": {"boxes":[]},
+      "body/head/right_ear": {"boxes":[]},
+      "body/tail": {"boxes":[]},
+      "head": {"pose":[0.0,21.509434,0.5660377,0.0,0.0,0.0,0.5660377,0.5660377,0.5660377],"boxes":[[32,0,-2.5,-4.0,-5.0,5.0,4.0,5.0,0.0,0.0,0.0,false,64.0,32.0]]},
+      "head/left_ear": {"pose":[0.0,0.0,0.0,0.0,0.2617994,0.0,1.0,1.0,1.0],"boxes":[[58,0,0.5,-9.0,-1.0,2.0,5.0,1.0,0.0,0.0,0.0,false,64.0,32.0]]},
+      "head/nose": {"pose":[0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0],"boxes":[[32,9,-0.5,-2.5,-5.5,1.0,1.0,1.0,0.0,0.0,0.0,false,64.0,32.0]]},
+      "head/right_ear": {"pose":[0.0,0.0,0.0,0.0,-0.2617994,0.0,1.0,1.0,1.0],"boxes":[[52,0,-2.5,-9.0,-1.0,2.0,5.0,1.0,0.0,0.0,0.0,false,64.0,32.0]]},
+      "left_front_leg": {"pose":[1.2,21.2,-0.4,-0.19198622,0.0,0.0,0.4,0.4,0.4],"boxes":[[8,15,-1.0,0.0,-1.0,2.0,7.0,2.0,0.0,0.0,0.0,false,64.0,32.0]]},
+      "left_haunch": {"pose":[1.2,21.4,1.48,-0.36651915,0.0,0.0,0.4,0.4,0.4],"boxes":[[30,15,-1.0,0.0,0.0,2.0,4.0,5.0,0.0,0.0,0.0,false,64.0,32.0]]},
+      "left_haunch/left_hind_foot": {"pose":[0.0,0.0,0.0,0.36651915,0.0,0.0,1.0,1.0,1.0],"boxes":[[26,24,-1.0,5.5,-3.7,2.0,1.0,7.0,0.0,0.0,0.0,false,64.0,32.0]]},
+      "right_front_leg": {"pose":[-1.2,21.2,-0.4,-0.19198622,0.0,0.0,0.4,0.4,0.4],"boxes":[[0,15,-1.0,0.0,-1.0,2.0,7.0,2.0,0.0,0.0,0.0,false,64.0,32.0]]},
+      "right_haunch": {"pose":[-1.2,21.4,1.48,-0.36651915,0.0,0.0,0.4,0.4,0.4],"boxes":[[16,15,-1.0,0.0,0.0,2.0,4.0,5.0,0.0,0.0,0.0,false,64.0,32.0]]},
+      "right_haunch/right_hind_foot": {"pose":[0.0,0.0,0.0,0.36651915,0.0,0.0,1.0,1.0,1.0],"boxes":[[8,24,-1.0,5.5,-3.7,2.0,1.0,7.0,0.0,0.0,0.0,false,64.0,32.0]]},
+      "tail": {"pose":[0.0,22.4,2.8,-0.3490659,0.0,0.0,0.4,0.4,0.4],"boxes":[[52,6,-1.5,-1.5,0.0,3.0,3.0,2.0,0.0,0.0,0.0,false,64.0,32.0]]}
+    },
+    "minecraft:sheep#main": {
+      "body": {"pose":[0.0,14.5,1.0,1.5707964,0.0,0.0,0.5,0.5,0.5]},
+      "head": {"pose":[0.0,14.0,-4.0,0.0,0.0,0.0,1.0,1.0,1.0]},
+      "left_front_leg": {"pose":[1.5,18.0,-2.5,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "left_hind_leg": {"pose":[1.5,18.0,3.5,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "right_front_leg": {"pose":[-1.5,18.0,-2.5,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "right_hind_leg": {"pose":[-1.5,18.0,3.5,0.0,0.0,0.0,0.5,0.5,0.5]}
+    },
+    "minecraft:turtle#main": {
+      "body": {"pose":[0.0,21.833334,-1.6666667,1.5707964,0.0,0.0,0.16666667,0.16666667,0.16666667]},
+      "egg_belly": {"pose":[0.0,21.833334,-1.6666667,1.5707964,0.0,0.0,0.16666667,0.16666667,0.16666667]},
+      "head": {"pose":[0.0,23.166668,-1.6666667,0.0,0.0,0.0,0.16666667,0.16666667,0.16666667]},
+      "left_front_leg": {"pose":[0.8333334,23.5,-0.6666667,0.0,0.0,0.0,0.16666667,0.16666667,0.16666667]},
+      "left_hind_leg": {"pose":[0.5833334,23.666668,1.8333334,0.0,0.0,0.0,0.16666667,0.16666667,0.16666667]},
+      "right_front_leg": {"pose":[-0.8333334,23.5,-0.6666667,0.0,0.0,0.0,0.16666667,0.16666667,0.16666667]},
+      "right_hind_leg": {"pose":[-0.5833334,23.666668,1.8333334,0.0,0.0,0.0,0.16666667,0.16666667,0.16666667]}
+    },
+    "minecraft:villager#main": {
+      "": {"pose":[0.0,12.7585,0.0,0.0,0.0,0.0,0.46875,0.46875,0.46875]}
+    },
+    "minecraft:wolf#main": {
+      "body": {"pose":[0.0,19.0,1.0,1.5707964,0.0,0.0,0.5,0.5,0.5]},
+      "head": {"pose":[-1.0,18.5,-5.0,0.0,0.0,0.0,1.0,1.0,1.0]},
+      "left_front_leg": {"pose":[0.25,20.0,-2.0,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "left_hind_leg": {"pose":[0.25,20.0,3.5,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "right_front_leg": {"pose":[-1.25,20.0,-2.0,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "right_hind_leg": {"pose":[-1.25,20.0,3.5,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "tail": {"pose":[-0.5,18.0,4.0,0.62831855,0.0,0.0,0.5,0.5,0.5]},
+      "upper_body": {"pose":[-0.5,19.0,-1.5,1.5707964,0.0,0.0,0.5,0.5,0.5]}
+    },
+    "minecraft:zombie_villager#boots": {
+      "body": {"pose":[0.0,12.0,0.0,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "head": {"pose":[0.0,12.0,0.0,0.0,0.0,0.0,0.75,0.75,0.75]},
+      "left_arm": {"pose":[2.5,13.0,0.0,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "left_leg": {"pose":[1.0,18.0,0.0,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "right_arm": {"pose":[-2.5,13.0,0.0,0.0,0.0,0.0,0.5,0.5,0.5]},
+      "right_leg": {"pose":[-1.0,18.0,0.0,0.0,0.0,0.0,0.5,0.5,0.5]}
+    }
+  },
+  "aliases": {
+    "minecraft:camel#saddle": "minecraft:camel#main",
+    "minecraft:camel_husk#saddle": "minecraft:camel#main",
+    "minecraft:cat#main": "minecraft:cat#collar",
+    "minecraft:cold_chicken#main": "minecraft:chicken#main",
+    "minecraft:cow#main": "minecraft:cold_cow#main",
+    "minecraft:dolphin#main": "minecraft:bee#main",
+    "minecraft:donkey#saddle": "minecraft:donkey#main",
+    "minecraft:drowned#chestplate": "minecraft:drowned#boots",
+    "minecraft:drowned#helmet": "minecraft:drowned#boots",
+    "minecraft:drowned#leggings": "minecraft:drowned#boots",
+    "minecraft:drowned#main": "minecraft:drowned#boots",
+    "minecraft:drowned#outer": "minecraft:drowned#boots",
+    "minecraft:elytra#main": "minecraft:bee#main",
+    "minecraft:glow_squid#main": "minecraft:bee#main",
+    "minecraft:horse#main": "minecraft:donkey#main",
+    "minecraft:horse#saddle": "minecraft:donkey#main",
+    "minecraft:husk#boots": "minecraft:drowned#boots",
+    "minecraft:husk#chestplate": "minecraft:drowned#boots",
+    "minecraft:husk#helmet": "minecraft:drowned#boots",
+    "minecraft:husk#leggings": "minecraft:drowned#boots",
+    "minecraft:husk#main": "minecraft:drowned#boots",
+    "minecraft:llama#main": "minecraft:llama#decor",
+    "minecraft:mooshroom#main": "minecraft:cold_cow#main",
+    "minecraft:mule#main": "minecraft:donkey#main",
+    "minecraft:mule#saddle": "minecraft:donkey#main",
+    "minecraft:ocelot#main": "minecraft:cat#collar",
+    "minecraft:pig#main": "minecraft:cold_pig#main",
+    "minecraft:pig#saddle": "minecraft:cold_pig#main",
+    "minecraft:piglin#boots": "minecraft:drowned#boots",
+    "minecraft:piglin#chestplate": "minecraft:drowned#boots",
+    "minecraft:piglin#helmet": "minecraft:drowned#boots",
+    "minecraft:piglin#leggings": "minecraft:drowned#boots",
+    "minecraft:piglin#main": "minecraft:drowned#boots",
+    "minecraft:sheep#wool": "minecraft:sheep#main",
+    "minecraft:sheep#wool_undercoat": "minecraft:sheep#main",
+    "minecraft:skeleton_horse#main": "minecraft:donkey#main",
+    "minecraft:skeleton_horse#saddle": "minecraft:donkey#main",
+    "minecraft:squid#main": "minecraft:bee#main",
+    "minecraft:strider#main": "minecraft:bee#main",
+    "minecraft:strider#saddle": "minecraft:bee#main",
+    "minecraft:trader_llama#main": "minecraft:llama#decor",
+    "minecraft:undead_horse_armor#main": "minecraft:horse_armor#main",
+    "minecraft:villager_no_hat#main": "minecraft:villager#main",
+    "minecraft:warm_cow#main": "minecraft:cold_cow#main",
+    "minecraft:wolf_armor#main": "minecraft:wolf#main",
+    "minecraft:zoglin#main": "minecraft:hoglin#main",
+    "minecraft:zombie#boots": "minecraft:drowned#boots",
+    "minecraft:zombie#chestplate": "minecraft:drowned#boots",
+    "minecraft:zombie#helmet": "minecraft:drowned#boots",
+    "minecraft:zombie#leggings": "minecraft:drowned#boots",
+    "minecraft:zombie#main": "minecraft:drowned#boots",
+    "minecraft:zombie_horse#main": "minecraft:donkey#main",
+    "minecraft:zombie_horse#saddle": "minecraft:donkey#main",
+    "minecraft:zombie_villager#chestplate": "minecraft:zombie_villager#boots",
+    "minecraft:zombie_villager#helmet": "minecraft:zombie_villager#boots",
+    "minecraft:zombie_villager#leggings": "minecraft:zombie_villager#boots",
+    "minecraft:zombie_villager#main": "minecraft:zombie_villager#boots",
+    "minecraft:zombie_villager_no_hat#main": "minecraft:zombie_villager#boots",
+    "minecraft:zombified_piglin#boots": "minecraft:drowned#boots",
+    "minecraft:zombified_piglin#chestplate": "minecraft:drowned#boots",
+    "minecraft:zombified_piglin#helmet": "minecraft:drowned#boots",
+    "minecraft:zombified_piglin#leggings": "minecraft:drowned#boots",
+    "minecraft:zombified_piglin#main": "minecraft:drowned#boots"
+  }
+}

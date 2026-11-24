@@ -35,6 +35,12 @@ public final class OldMCSodiumConfig implements ConfigEntryPoint {
         addToggle(builder, world, OldMCOptions.GRID);
         mod.addPage(world);
 
+        if (OldMCOptions.CLASSIC_BABY_MOBS.available()) {
+            var mobs = page(builder, "mobs");
+            addToggle(builder, mobs, OldMCOptions.CLASSIC_BABY_MOBS);
+            mod.addPage(mobs);
+        }
+
         var general = page(builder, "general");
         addToggle(builder, general, OldMCOptions.DIRT_BACKGROUND);
         addToggle(builder, general, OldMCOptions.DEBUG);

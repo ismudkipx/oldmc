@@ -36,6 +36,9 @@ public final class OldMCOneConfig implements ConfigEntrypoint {
             root.addMetadata("custom_save", (Runnable) OldMCOptions::saveIfDirty);
             addToggle(root, "world", OldMCOptions.PERCENTAGE);
             addToggle(root, "world", OldMCOptions.GRID);
+            if (OldMCOptions.CLASSIC_BABY_MOBS.available()) {
+                addToggle(root, "mobs", OldMCOptions.CLASSIC_BABY_MOBS);
+            }
             addToggle(root, "general", OldMCOptions.DIRT_BACKGROUND);
             addToggle(root, "general", OldMCOptions.DEBUG);
             if (OldMCOptions.SODIUM_F3_RIGHT.available()) {
