@@ -100,6 +100,7 @@ public final class OldMCSettingsScreen extends OptionsSubScreen {
         }
 
         var menus = rows.addSection("menus");
+        addToggle(menus, OldMCOptions.CLASSIC_CREATE_WORLD);
         if (controls.containsKey(OldMCOptions.TITLE_SIDE_BUTTONS)) {
             addToggle(menus, OldMCOptions.TITLE_SIDE_BUTTONS);
             addTitleFriendPlacement(menus);

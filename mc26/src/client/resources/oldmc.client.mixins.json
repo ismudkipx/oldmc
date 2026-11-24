@@ -18,6 +18,7 @@
     "LoadingBackgroundMixin",
     "MenuBackgroundMixin",
     "CreateWorldBackgroundMixin",
+    "ClassicCreateWorldMixin",
     "ListBackgroundMixin",
     "GenericMessageScreenMixin",
     "LoadingGridMixin",

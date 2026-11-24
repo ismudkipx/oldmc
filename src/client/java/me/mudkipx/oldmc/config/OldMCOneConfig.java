@@ -64,6 +64,7 @@ public final class OldMCOneConfig implements ConfigEntrypoint {
                         OldMCOptions.DEFAULT_MAJOR_VERSION_FORMAT ? 1 : 0, Integer.class);
                 addChoices(root, format, new String[]{"oldmc.format.year", "oldmc.format.major"});
             }
+            addToggle(root, "menus", OldMCOptions.CLASSIC_CREATE_WORLD);
             if (OldMCOptions.TITLE_SIDE_BUTTONS.available()) {
                 addToggle(root, "menus", OldMCOptions.TITLE_SIDE_BUTTONS);
                 addPlacement(root, "titleFriendButtonPlacement", OldMCOptions::titleFriendPlacement,

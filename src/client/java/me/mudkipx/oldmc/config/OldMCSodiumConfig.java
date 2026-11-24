@@ -65,6 +65,7 @@ public final class OldMCSodiumConfig implements ConfigEntryPoint {
         mod.addPage(general);
 
         var menus = page(builder, "menus");
+        addToggle(builder, menus, OldMCOptions.CLASSIC_CREATE_WORLD);
         if (OldMCOptions.TITLE_SIDE_BUTTONS.available()) {
             addToggle(builder, menus, OldMCOptions.TITLE_SIDE_BUTTONS);
             String key = "oldmc.option.titleFriendButtonPlacement";
