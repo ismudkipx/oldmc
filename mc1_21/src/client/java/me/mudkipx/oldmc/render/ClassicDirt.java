@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 public final class ClassicDirt {
     public static final ResourceLocation MENU = ResourceLocation.fromNamespaceAndPath("oldmc", "textures/gui/dirt_background.png");
     public static final ResourceLocation LIST = ResourceLocation.fromNamespaceAndPath("oldmc", "textures/gui/dirt_list_background.png");
+    public static final ResourceLocation TAB_HEADER = ResourceLocation.fromNamespaceAndPath("oldmc", "textures/gui/tab_header_background.png");
 
     public static void drawBackground(GuiGraphics graphics) {
         Screen.renderMenuBackgroundTexture(graphics, MENU, 0, 0, 0, 0, graphics.guiWidth(), graphics.guiHeight());

@@ -13,6 +13,7 @@
     "OptionTooltipMixin",
     "LoadingBackgroundMixin",
     "MenuBackgroundMixin",
+    "CreateWorldBackgroundMixin",
     "ListBackgroundMixin",
     "GenericMessageScreenMixin",
     "LoadingGridMixin"
