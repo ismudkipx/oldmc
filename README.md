@@ -1,19 +1,25 @@
 # OldMC
 
-OldMC 是一个客户端 Fabric 模组。创建或打开世界时，区块图上方会像 Minecraft 1.21.8 一样显示加载百分比。数字使用游戏报告的实际进度，并跟随游戏语言。加入服务器或切换维度时，若客户端只有接收地形提示，则沿用 1.21.8 的显示方式。
+> Restore the classic Minecraft experience.
 
-按 F3 打开调试界面时，左栏从版本、帧率和服务器信息开始，坐标与世界信息排在下方。右栏显示 Java、内存、硬件和准星指向的目标。默认预设会启用旧版对应的条目；已保存的自定义选择仍然生效。在 F3+F6 中，每个条目仍支持关闭、仅打开调试界面时显示或始终显示。
+OldMC is a client-side Fabric mod that aims to restore the look and feel of earlier versions of Minecraft.
 
-## 设置
+## Features
 
-从「选项 → 视频设置 → OldMC 设置」或 Mod Menu 打开设置页。安装与游戏版本匹配的 Sodium 0.8.0 或更高版本后，直接在 Sodium 视频设置中调整并点击「应用」。OneConfig 的设置面板也支持直接调整。三个入口使用同一份 `config/oldmc.json`。
+- **Dirt background** - Replaces the transparent background in Minecraft 1.20.5 and later with a dirt background.
+- **Classic F3 layout** - Restores the F3 layout from earlier versions in Minecraft 1.21.9 and later.
+- **World loading percentage** - Restores the world loading screen from before Minecraft 1.21.9 by removing the progress bar and bringing back the percentage.
+- **Classic loading chunk map size** - Restores the 29×29 chunk map size used before Minecraft 1.21.9.
+- **Classic world creation screen** - Restores the world creation screen from before Minecraft 1.19.4.
+- **Classic title screen button layout** - Restores the title screen button layout from earlier versions in Minecraft 26.2 and later.
+- **Text-only pause menu buttons** - Restores the pause menu button layout from earlier versions in Minecraft 26.2 and later.
+- **Pause menu/title screen Friends button position** - Choose where the Friends button appears or hide it.
+- **Remove “Give Feedback” and “Report Bugs”** - Removes the “Give Feedback” and “Report Bugs” buttons from the pause menu.
+- **Remove “Report Player”** - Removes the “Report Player” button from the pause menu.
+- **Classic version numbers** - Displays the game version number in the format you choose under “Version number format” below.
+- **Version number format** - Choose between “Major update format”, “Year-based update format”, and “1.21.x format”. See the examples below.
 
-- 「世界加载百分比」在区块图上方显示进度。进度达到 100% 后显示加载地形提示。「旧版加载区块图大小」单独控制 1.21.8 的 29×29 格区块图。
-- 「泥土背景」恢复 1.20.4 的菜单和世界加载背景。「准备创建世界」「保存世界中」等提示以白字显示在距顶部 70 个 GUI 像素处。
-- 切换旧版 F3 布局后，当前条目按所选布局排列。F3+F6 的「默认配置」随开关选择条目清单，点击后应用，无需重启。
-- 26.1–26.3 额外提供旧版游戏版本号开关，可选择「大版本更新格式」（默认）、「年份更新格式」或「1.21.x 格式」。主菜单、窗口标题、F3 与相关版本提示使用下表的显示名称。联网使用实际游戏版本及协议号。
-
-| 实际版本 | 大版本更新格式 | 年份更新格式 | 1.21.x 格式 |
+| Actual version | Major update format | Year-based update format | 1.21.x format |
 | --- | --- | --- | --- |
 | 26.1 | 1.22 | 1.26 | 1.21.12 |
 | 26.1.1 | 1.22.1 | 1.26.1 | 1.21.13 |
@@ -21,23 +27,16 @@ OldMC 是一个客户端 Fabric 模组。创建或打开世界时，区块图上
 | 26.2 | 1.23 | 1.26.3 | 1.21.15 |
 | 26.3 | 1.24 | 1.26.4 | 1.21.16 |
 
-## 构建
+## Dependencies
 
-使用 JDK 25，在包含 `gradlew` 的项目根目录运行：
+- Fabric API
 
-```sh
+## Build from source
+
+```bash
+git clone https://github.com/ismudkipx/oldmc.git
+cd oldmc
 ./gradlew build
 ```
 
-Windows 使用 `gradlew.bat build`。两个安装包都会输出到根目录的 `build/libs/`，按游戏版本选一个放进客户端的 `mods/` 文件夹。
-
-| Minecraft 正式版 | 安装包 | 游戏运行时 |
-| --- | --- | --- |
-| 1.21.9、1.21.10、1.21.11 | `oldmc-0.0.12+mc1.21.9-1.21.11.jar` | Java 21 或以上 |
-| 26.1、26.1.1、26.1.2、26.2、26.3 | `oldmc-0.0.12+mc26.1-26.3.jar` | Java 25 或以上 |
-
-两个安装包均声明最低 Fabric Loader 版本为 0.17.3，构建使用 0.20.1，无需 Fabric API。只构建一个目标时，使用 `./gradlew :mc1_21:build` 或 `./gradlew :mc26:build`。
-
-## 源码
-
-包名为 `me.mudkipx.oldmc`。显示逻辑位于 `src/client/java/`，两个版本系列各自的渲染方法签名位于 `mc1_21/` 和 `mc26/`。工程基于 FabricMC 的 [fabric-example-mod](https://github.com/FabricMC/fabric-example-mod)。
+The build produces two files in the `build/libs` folder, one for Minecraft 1.21.9–1.21.11 and one for Minecraft 26.1–26.3.
