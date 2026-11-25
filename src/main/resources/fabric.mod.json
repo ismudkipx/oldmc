@@ -7,6 +7,11 @@
   "authors": [
     "smalldayDC_"
   ],
+  "contact": {
+    "homepage": "https://modrinth.com/project/oldmc",
+    "issues": "https://github.com/ismudkipx/oldmc/issues",
+    "sources": "https://github.com/ismudkipx/oldmc"
+  },
   "environment": "client",
   "license": "MIT",
   "icon": "assets/oldmc/textures/gui/icon.png",
@@ -31,5 +36,12 @@
     "sodium:config_api_user": [
       "me.mudkipx.oldmc.config.OldMCSodiumConfig"
     ]
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.curseforge": "https://www.curseforge.com/minecraft/mc-mods/oldmc"
+      }
+    }
   }
 }
