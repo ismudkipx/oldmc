@@ -15,7 +15,6 @@
     "BabySoundMixin",
     "LevelLoadingScreenMixin",
     "DebugEntryListMixin",
-    "DebugProfileAccessor",
     "DebugOptionsScreenMixin",
     "DebugScreenOverlayMixin",
     "VideoSettingsMixin",

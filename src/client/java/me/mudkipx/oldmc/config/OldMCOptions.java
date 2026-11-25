@@ -5,11 +5,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import me.mudkipx.oldmc.mixin.DebugProfileAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.SemanticVersion;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.debug.DebugScreenProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -221,12 +219,7 @@ public enum OldMCOptions implements OptionCatalog.Setting {
         saveIfDirty();
         var client = Minecraft.getInstance();
         if (debugBefore != DEBUG.enabled()) {
-            var entries = client.debugEntries;
-            if (entries.isUsingProfile(DebugScreenProfile.DEFAULT) && !DefaultDebugProfile.matches(entries)) {
-                // Vanilla saves named profiles by name only. Preserve these exact entries on restart.
-                ((DebugProfileAccessor) entries).oldmc$setProfile(null);
-                entries.save();
-            }
+            ((LayoutDebugProfile) client.debugEntries).oldmc$onLayoutChanged();
         }
         if (versionBefore != VERSION.enabled() || (formatBefore != versionFormat && versionBefore)) client.updateTitle();
     }

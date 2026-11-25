@@ -33,9 +33,10 @@ public final class DefaultDebugProfile {
     }
 
     public static boolean matches(DebugScreenEntryList entries) {
-        var defaults = selected(DebugScreenEntries.PROFILES.get(DebugScreenProfile.DEFAULT));
+        // Compare what pressing Default actually loads, including entries added during a mod's rebuild hook.
+        var defaults = new DefaultProfileEntries();
         for (var id : DebugScreenEntries.allEntries().keySet()) {
-            if (entries.getStatus(id) != defaults.getOrDefault(id, DebugScreenEntryStatus.NEVER)) return false;
+            if (entries.getStatus(id) != defaults.getStatus(id)) return false;
         }
         return true;
     }
