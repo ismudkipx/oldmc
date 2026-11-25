@@ -51,15 +51,24 @@ abstract class ClassicCreateWorldMixin extends Screen implements ClassicWorldVie
             if (child instanceof Button button) {
                 String key = WidgetLabels.key(button.getMessage());
                 if (key.equals("selectWorld.create")) {
-                    if (create != null) return;
+                    if (create != null) {
+                        ClassicWorldForm.logFallback("duplicate footer button '{}'.", key);
+                        return;
+                    }
                     create = button;
                 } else if (key.equals("gui.cancel")) {
-                    if (cancel != null) return;
+                    if (cancel != null) {
+                        ClassicWorldForm.logFallback("duplicate footer button '{}'.", key);
+                        return;
+                    }
                     cancel = button;
                 }
             }
         }
-        if (bar == null) return;
+        if (bar == null) {
+            ClassicWorldForm.logFallback("the tab bar is missing.");
+            return;
+        }
         oldmc$form = ClassicWorldForm.fromTabs(bar.getTabs(), getUiState(), create, cancel, this::oldmc$switchPage);
         if (oldmc$form == null) return;
         clearFocus();

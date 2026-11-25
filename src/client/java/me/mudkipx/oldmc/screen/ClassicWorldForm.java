@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.function.Consumer;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -16,9 +17,12 @@ import net.minecraft.client.gui.screens.worldselection.WorldCreationUiState;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** The two pages share the current game's world creation state and vanilla action buttons. */
 public final class ClassicWorldForm {
+    private static final Logger LOGGER = LoggerFactory.getLogger("OldMC");
     private final WorldCreationUiState state;
     private final EditBox name, seed;
     private final AbstractWidget mode, difficulty, commands, type, customize, packs, rules, experiments;
@@ -53,7 +57,14 @@ public final class ClassicWorldForm {
 
     public static ClassicWorldForm fromTabs(List<Tab> tabs, WorldCreationUiState state,
                                             Button create, Button cancel, Runnable switchPage) {
-        if (tabs.size() != 3 || create == null || cancel == null) return null;
+        if (tabs.size() != 3) {
+            logFallback("expected 3 tabs, found {}.", tabs.size());
+            return null;
+        }
+        if (create == null || cancel == null) {
+            logFallback("missing footer button '{}'.", create == null ? "selectWorld.create" : "gui.cancel");
+            return null;
+        }
         var controls = new HashMap<String, AbstractWidget>();
         for (Tab tab : tabs) {
             List<AbstractWidget> widgets = new ArrayList<>();
@@ -74,26 +85,65 @@ public final class ClassicWorldForm {
                     key = previousLabel;
                 }
                 previousLabel = "";
-                if (controls.putIfAbsent(key, widget) != null) return null;
+                if (controls.putIfAbsent(key, widget) != null) {
+                    logFallback("duplicate control key '{}' ({}).", displayKey(key), widget.getClass().getName());
+                    return null;
+                }
             }
         }
         // Preserve the original tabs when another mod adds controls we cannot represent.
-        if (!(controls.remove("selectWorld.enterName") instanceof EditBox name)
-                || !(controls.remove("selectWorld.enterSeed") instanceof EditBox seed)
-                || !(controls.remove("selectWorld.gameMode") instanceof CycleButton<?> mode)
-                || !(controls.remove("options.difficulty") instanceof CycleButton<?> difficulty)
-                || !(controls.remove("selectWorld.allowCommands") instanceof CycleButton<?> commands)
-                || !(commands.getValue() instanceof Boolean)
-                || !(controls.remove("selectWorld.mapType") instanceof CycleButton<?> type)
-                || !(controls.remove("selectWorld.customizeType") instanceof Button customize)
-                || !(controls.remove("selectWorld.dataPacks") instanceof Button packs)
-                || !(controls.remove("selectWorld.gameRules") instanceof Button rules)
-                || !(controls.remove("selectWorld.experiments") instanceof Button experiments)
-                || !(controls.remove("selectWorld.mapFeatures") instanceof CycleButton<?>)
-                || !(controls.remove("selectWorld.bonusItems") instanceof CycleButton<?>)
-                || !controls.isEmpty()) return null;
+        EditBox name = takeControl(controls, "selectWorld.enterName", EditBox.class);
+        if (name == null) return null;
+        EditBox seed = takeControl(controls, "selectWorld.enterSeed", EditBox.class);
+        if (seed == null) return null;
+        CycleButton<?> mode = takeControl(controls, "selectWorld.gameMode", CycleButton.class);
+        if (mode == null) return null;
+        CycleButton<?> difficulty = takeControl(controls, "options.difficulty", CycleButton.class);
+        if (difficulty == null) return null;
+        CycleButton<?> commands = takeControl(controls, "selectWorld.allowCommands", CycleButton.class);
+        if (commands == null) return null;
+        if (!(commands.getValue() instanceof Boolean)) {
+            logFallback("control 'selectWorld.allowCommands' does not have a boolean value.");
+            return null;
+        }
+        CycleButton<?> type = takeControl(controls, "selectWorld.mapType", CycleButton.class);
+        if (type == null) return null;
+        Button customize = takeControl(controls, "selectWorld.customizeType", Button.class);
+        if (customize == null) return null;
+        Button packs = takeControl(controls, "selectWorld.dataPacks", Button.class);
+        if (packs == null) return null;
+        Button rules = takeControl(controls, "selectWorld.gameRules", Button.class);
+        if (rules == null) return null;
+        Button experiments = takeControl(controls, "selectWorld.experiments", Button.class);
+        if (experiments == null) return null;
+        if (takeControl(controls, "selectWorld.mapFeatures", CycleButton.class) == null
+                || takeControl(controls, "selectWorld.bonusItems", CycleButton.class) == null) return null;
+        if (!controls.isEmpty()) {
+            var extra = controls.entrySet().iterator().next();
+            logFallback("unexpected control '{}' ({}).", displayKey(extra.getKey()), extra.getValue().getClass().getName());
+            return null;
+        }
         return new ClassicWorldForm(state, name, seed, mode, difficulty, commands, type, customize,
                 packs, rules, experiments, create, cancel, switchPage);
+    }
+
+    private static <T extends AbstractWidget> T takeControl(Map<String, AbstractWidget> controls, String key, Class<T> type) {
+        AbstractWidget widget = controls.remove(key);
+        if (type.isInstance(widget)) return type.cast(widget);
+        if (widget == null) {
+            logFallback("missing control '{}'.", key);
+        } else {
+            logFallback("control '{}' expected {}, found {}.", key, type.getName(), widget.getClass().getName());
+        }
+        return null;
+    }
+
+    private static String displayKey(String key) {
+        return key.isEmpty() ? "<no translation key>" : key;
+    }
+
+    public static void logFallback(String reason, Object... arguments) {
+        LOGGER.debug("[OldMC] Keeping the vanilla world creation tabs: " + reason, arguments);
     }
 
     public void visitWidgets(Consumer<AbstractWidget> consumer) {
