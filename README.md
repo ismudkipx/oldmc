@@ -2,8 +2,6 @@
 
 > Restore the classic Minecraft experience.
 
----
-
 OldMC is a client-side Fabric mod that aims to bring the classic Minecraft experience to newer versions(1.21.9+).
 
 ## Features
