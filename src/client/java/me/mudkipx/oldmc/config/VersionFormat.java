@@ -18,7 +18,6 @@ public enum VersionFormat {
         for (var format : values()) {
             if (format.key.equals(key)) return format;
         }
-        OldMCOptions.warnUnknownChoice("versionFormat");
-        return DEFAULT;
+        return null;
     }
 }

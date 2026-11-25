@@ -37,7 +37,7 @@ abstract class PauseMenuMixin {
     private LayoutElement oldmc$shortcutRow(GridLayout.RowHelper row, LayoutElement item, int span,
                                             LayoutSettings settings, Operation<LayoutElement> original,
                                             @Share("vanillaShortcuts") LocalRef<Set<LayoutElement>> vanilla) {
-        if (OldMCOptions.HAS_PAUSE_MENU_ICONS && vanilla.get() != null && item instanceof LinearLayout shortcuts) {
+        if (OldMCOptions.IS_26_2_OR_LATER && vanilla.get() != null && item instanceof LinearLayout shortcuts) {
             var layout = ClassicPauseMenu.layout(shortcuts, vanilla.get());
             if (layout == null) return item;
             item = layout;

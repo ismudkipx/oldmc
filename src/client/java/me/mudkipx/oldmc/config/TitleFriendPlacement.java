@@ -16,7 +16,6 @@ public enum TitleFriendPlacement {
         for (var placement : values()) {
             if (placement.key().equals(key)) return placement;
         }
-        OldMCOptions.warnUnknownChoice("titleFriendButtonPlacement");
-        return DEFAULT;
+        return null;
     }
 }

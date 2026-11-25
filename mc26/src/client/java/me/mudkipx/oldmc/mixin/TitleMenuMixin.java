@@ -31,7 +31,7 @@ abstract class TitleMenuMixin extends Screen {
 
     @Inject(method = "init()V", at = @At("TAIL"))
     private void oldmc$positionTitleButtons(CallbackInfo ci) {
-        if (!OldMCOptions.HAS_PAUSE_MENU_ICONS || !OldMCOptions.TITLE_SIDE_BUTTONS.enabled()) return;
+        if (!OldMCOptions.IS_26_2_OR_LATER || !OldMCOptions.TITLE_SIDE_BUTTONS.enabled()) return;
         var language = oldmc$findButton("options.language");
         var accessibility = oldmc$findButton("options.accessibility");
         var options = oldmc$findButton("menu.options");

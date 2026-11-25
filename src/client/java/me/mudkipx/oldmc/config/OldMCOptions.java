@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.function.Function;
 
 public enum OldMCOptions implements OptionCatalog.Setting {
     PERCENTAGE("percentage"), GRID("grid"), DIRT_BACKGROUND("dirtBackground"), DEBUG("debug"),
@@ -31,7 +32,7 @@ public enum OldMCOptions implements OptionCatalog.Setting {
     REMOVE_PLAYER_REPORTING("removePlayerReporting"), VERSION("version");
 
     private static final Logger LOGGER = LoggerFactory.getLogger("OldMC");
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
     private static final Path FILE = FabricLoader.getInstance().getConfigDir().resolve("oldmc.json");
     private static VersionFormat versionFormat = VersionFormat.DEFAULT;
     private static boolean dirty;
@@ -41,15 +42,15 @@ public enum OldMCOptions implements OptionCatalog.Setting {
     private static final boolean HAS_IRIS = FabricLoader.getInstance().isModLoaded("iris");
     static final String GAME_VERSION;
     private static final boolean HAS_YEAR_VERSION;
-    public static final boolean HAS_PAUSE_MENU_ICONS;
+    public static final boolean IS_26_2_OR_LATER;
     static {
         var version = FabricLoader.getInstance().getModContainer("minecraft").orElseThrow().getMetadata().getVersion();
         GAME_VERSION = version.getFriendlyString();
         HAS_YEAR_VERSION = GAME_VERSION.startsWith("26.");
-        HAS_PAUSE_MENU_ICONS = version instanceof SemanticVersion && hasPauseMenuIcons((SemanticVersion) version);
+        IS_26_2_OR_LATER = version instanceof SemanticVersion && isAtLeast26_2((SemanticVersion) version);
     }
 
-    private static boolean hasPauseMenuIcons(SemanticVersion version) {
+    private static boolean isAtLeast26_2(SemanticVersion version) {
         int major = version.getVersionComponent(0);
         return major > 26 || major == 26 && version.getVersionComponent(1) >= 2;
     }
@@ -111,7 +112,7 @@ public enum OldMCOptions implements OptionCatalog.Setting {
             case IRIS_F3_RIGHT -> HAS_IRIS;
             case IMMEDIATELY_FAST_F3_VERSION -> HAS_IMMEDIATELY_FAST && HAS_YEAR_VERSION;
             case IRIS_F3_VERSION -> HAS_IRIS && HAS_YEAR_VERSION;
-            case PAUSE_MENU_TEXT, TITLE_SIDE_BUTTONS -> HAS_PAUSE_MENU_ICONS;
+            case PAUSE_MENU_TEXT, TITLE_SIDE_BUTTONS -> IS_26_2_OR_LATER;
             default -> true;
         };
     }
@@ -136,7 +137,9 @@ public enum OldMCOptions implements OptionCatalog.Setting {
             JsonElement data = GSON.fromJson(Files.readString(FILE), JsonElement.class);
             if (data != null && !data.isJsonNull()) {
                 if (!data.isJsonObject()) throw new JsonParseException("Expected a configuration object");
-                applyConfig(data.getAsJsonObject());
+                var config = data.getAsJsonObject();
+                applyConfig(config);
+                if (dirty) save(config);
                 return;
             }
             LOGGER.warn("[OldMC] Empty configuration file; reset to default values.");
@@ -158,26 +161,24 @@ public enum OldMCOptions implements OptionCatalog.Setting {
     }
 
     private static void applyConfig(JsonObject data) {
-        String placement = readString(data, "friendButtonPlacement");
-        if (placement != null) friendPlacement = FriendButtonPlacement.fromKey(placement);
-        String titlePlacement = readString(data, "titleFriendButtonPlacement");
-        if (titlePlacement != null) titleFriendPlacement = TitleFriendPlacement.fromKey(titlePlacement);
-        String format = readString(data, "versionFormat");
-        if (format != null) {
-            versionFormat = VersionFormat.fromKey(format);
+        friendPlacement = readChoice(data, "friendButtonPlacement",
+                FriendButtonPlacement.DEFAULT.key(), FriendButtonPlacement::fromKey);
+        titleFriendPlacement = readChoice(data, "titleFriendButtonPlacement",
+                TitleFriendPlacement.DEFAULT.key(), TitleFriendPlacement::fromKey);
+        if (data.has("versionFormat") && !data.get("versionFormat").isJsonNull()) {
+            versionFormat = readChoice(data, "versionFormat", VersionFormat.DEFAULT.key, VersionFormat::fromKey);
         } else {
-            Boolean legacy = readBoolean(data, "majorVersionFormat");
-            if (legacy != null) versionFormat = legacy ? VersionFormat.MAJOR : VersionFormat.YEAR;
+            boolean major = readBoolean(data, "majorVersionFormat", VersionFormat.DEFAULT == VersionFormat.MAJOR);
+            versionFormat = major ? VersionFormat.MAJOR : VersionFormat.YEAR;
         }
         for (var option : values()) {
-            Boolean value = readBoolean(data, option.key);
-            if (value != null) option.enabled = value;
+            option.enabled = readBoolean(data, option.key, option.defaultValue);
         }
     }
 
-    private static Boolean readBoolean(JsonObject data, String key) {
+    private static boolean readBoolean(JsonObject data, String key, boolean fallback) {
         var value = data.get(key);
-        if (value == null || value.isJsonNull()) return null;
+        if (value == null || value.isJsonNull()) return fallback;
         if (value.isJsonPrimitive()) {
             var primitive = value.getAsJsonPrimitive();
             if (primitive.isBoolean()) return primitive.getAsBoolean();
@@ -187,18 +188,28 @@ public enum OldMCOptions implements OptionCatalog.Setting {
                 if ("false".equalsIgnoreCase(primitive.getAsString())) return false;
             }
         }
-        throw new JsonParseException("Expected a boolean for " + key);
+        data.addProperty(key, fallback);
+        markCorrected(key);
+        return fallback;
     }
 
-    static void warnUnknownChoice(String key) {
-        LOGGER.warn("[OldMC] Unknown value for {}; using its default.", key);
-    }
-
-    private static String readString(JsonObject data, String key) {
+    private static <E extends Enum<E>> E readChoice(JsonObject data, String key, String defaultKey,
+                                                    Function<String, E> fromKey) {
         var value = data.get(key);
-        if (value == null || value.isJsonNull()) return null;
-        if (value.isJsonPrimitive() && value.getAsJsonPrimitive().isString()) return value.getAsString();
-        throw new JsonParseException("Expected a string for " + key);
+        if (value != null && !value.isJsonNull()) {
+            if (value.isJsonPrimitive() && value.getAsJsonPrimitive().isString()) {
+                E choice = fromKey.apply(value.getAsString());
+                if (choice != null) return choice;
+            }
+            data.addProperty(key, defaultKey);
+            markCorrected(key);
+        }
+        return fromKey.apply(defaultKey);
+    }
+
+    private static void markCorrected(String key) {
+        LOGGER.warn("[OldMC] Invalid value for {}; using its default.", key);
+        dirty = true;
     }
 
     static synchronized void applyChanges(Runnable edits) {
@@ -227,6 +238,10 @@ public enum OldMCOptions implements OptionCatalog.Setting {
         data.addProperty("titleFriendButtonPlacement", titleFriendPlacement.key());
         data.addProperty("versionFormat", versionFormat.key);
         for (var option : values()) data.addProperty(option.key, option.enabled);
+        save(data);
+    }
+
+    private static void save(JsonObject data) {
         try {
             Files.createDirectories(FILE.getParent());
             Path tmp = Files.createTempFile(FILE.getParent(), "oldmc-", ".tmp");
