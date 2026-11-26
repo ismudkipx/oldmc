@@ -29,8 +29,6 @@ OldMC is a client-side Fabric mod that aims to bring the classic Minecraft exper
 | 26.2 | 1.23 | 1.26.3 | 1.21.15 |
 | 26.3 | 1.24 | 1.26.4 | 1.21.16 |
 
-## Dependencies
-
 ## Requirements
 - [Fabric Loader](https://github.com/FabricMC/fabric-loader) `>=0.17.3`
 - [Fabric API](https://github.com/FabricMC/fabric-api)
