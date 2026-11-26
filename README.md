@@ -6,18 +6,19 @@ OldMC is a client-side Fabric mod that aims to bring the classic Minecraft exper
 
 ## Features
 
-- **Dirt background** - Replaces the transparent background in Minecraft 1.20.5 and later with a dirt background.
+- **Dirt background** - Restores the dirt background from Minecraft 1.20.4 and earlier, replacing the transparent background used since 1.20.5.
 - **Classic F3 layout** - Restores the F3 layout from earlier versions in Minecraft 1.21.9 and later.
 - **World loading percentage** - Restores the world loading screen from before Minecraft 1.21.9 by removing the progress bar and bringing back the percentage.
 - **Classic loading grid size** - Restores the 29×29 chunk grid used before Minecraft 1.21.9.
 - **Restore baby mob appearances (26.1+)** - Restores the look of baby mobs from before 26.1.
 - **Restore baby mob sounds (26.1+)** - Restores the sounds baby mobs made before 26.1.
-- **Classic world creation screen** - Restores the Create New World screen from before Minecraft 1.19.4.
+- **Classic world creation screen** - Restores the Create New World screen from Minecraft 1.19.3 and earlier.
 - **Classic title screen button layout** - Restores the title screen button layout from earlier versions in Minecraft 26.2 and later.
 - **Text-only pause menu buttons** - Restores the pause menu button layout from earlier versions in Minecraft 26.2 and later.
-- **Pause menu/title screen Friends button position** - Choose where the Friends button appears or hide it.
-- **Remove “Give Feedback” and “Report Bugs”** - Removes the “Give Feedback” and “Report Bugs” buttons from the pause menu.
-- **Remove “Report Player”** - Removes the “Player Reporting” button from the pause menu.
+- **Pause menu Friends button position** - Choose where the Friends button appears on the pause menu, or hide it.
+- **Title screen Friends button position** - Choose where the Friends button appears on the title screen, or hide it. Requires “Classic title screen button layout”.
+- **Remove “Report Bugs” and “Give Feedback”** - Removes both buttons from the pause menu.
+- **Remove “Player Reporting”** - Removes the “Player Reporting” button from the pause menu.
 - **Classic version numbers** - Displays the game version number in the format you choose under “Version number format” below.
 - **Version number format** - Choose between “Major update format”, “Year-based update format”, and “1.21.x format”. See the examples below.
 
