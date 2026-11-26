@@ -62,10 +62,10 @@
   "oldmc.option.removeFeedback.tooltip": "Remove both buttons from the pause menu.",
   "oldmc.option.removePlayerReporting": "Remove “Player Reporting”",
   "oldmc.option.removePlayerReporting.tooltip": "Remove the “Player Reporting” button from the pause menu.",
-  "oldmc.option.titleSideButtons": "Restore classic title screen button layout",
+  "oldmc.option.titleSideButtons": "Classic title screen button layout",
   "oldmc.option.titleSideButtons.tooltip": "Place Language to the left of Options and Accessibility to the right of Quit Game, as in 26.1 and earlier versions.",
   "oldmc.option.titleFriendButtonPlacement": "Title screen Friends button position",
-  "oldmc.option.titleFriendButtonPlacement.tooltip": "Choose where the Friends button appears on the title screen, or hide it.\nRequires “Restore classic title screen button layout”.",
+  "oldmc.option.titleFriendButtonPlacement.tooltip": "Choose where the Friends button appears on the title screen, or hide it.\nRequires “Classic title screen button layout”.",
   "oldmc.placement.icon_left": "Icon left of Realms",
   "oldmc.placement.icon_right": "Icon right of Realms"
 }
