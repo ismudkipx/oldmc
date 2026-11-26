@@ -12,7 +12,7 @@ OldMC is a client-side Fabric mod that aims to bring the classic Minecraft exper
 - **Classic loading grid size** - Restores the 29×29 chunk grid used before Minecraft 1.21.9.
 - **Restore baby mob appearances (26.1+)** - Restores the look of baby mobs from before 26.1.
 - **Restore baby mob sounds (26.1+)** - Restores the sounds baby mobs made before 26.1.
-- **Classic world creation screen** - Restores the world creation screen from before Minecraft 1.19.4.
+- **Classic world creation screen** - Restores the Create New World screen from before Minecraft 1.19.4.
 - **Classic title screen button layout** - Restores the title screen button layout from earlier versions in Minecraft 26.2 and later.
 - **Text-only pause menu buttons** - Restores the pause menu button layout from earlier versions in Minecraft 26.2 and later.
 - **Pause menu/title screen Friends button position** - Choose where the Friends button appears or hide it.
