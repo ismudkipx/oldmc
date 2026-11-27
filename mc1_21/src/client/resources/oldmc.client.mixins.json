@@ -3,6 +3,10 @@
   "package": "me.mudkipx.oldmc.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "BiomeMobAppearanceMixin",
+    "FallingLeafParticleMixin",
+    "GroundCoverMixin",
+    "BiomeMobSoundMixin",
     "LevelLoadingScreenMixin",
     "DebugEntryListMixin",
     "DebugOptionsScreenMixin",

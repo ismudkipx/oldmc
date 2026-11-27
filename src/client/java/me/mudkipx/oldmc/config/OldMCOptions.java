@@ -21,10 +21,12 @@ import java.util.function.Function;
 
 public enum OldMCOptions implements OptionCatalog.Setting {
     PERCENTAGE("percentage"), GRID("grid"), DIRT_BACKGROUND("dirtBackground"), DEBUG("debug"),
+    HIDE_FALLING_LEAVES("hideFallingLeaves"), HIDE_WILDFLOWERS_AND_LEAF_LITTER("hideWildflowersAndLeafLitter"),
     SODIUM_F3_RIGHT("sodiumF3Right"), SODIUM_F3_VERSION("sodiumF3Version"),
     IMMEDIATELY_FAST_F3_RIGHT("immediatelyFastF3Right"), IMMEDIATELY_FAST_F3_VERSION("immediatelyFastF3Version"),
     IRIS_F3_RIGHT("irisF3Right"), IRIS_F3_VERSION("irisF3Version"),
     CLASSIC_BABY_MOBS("classicBabyMobs"), CLASSIC_BABY_SOUNDS("classicBabySounds"),
+    CLASSIC_BIOME_MOBS("classicBiomeMobs"), CLASSIC_BIOME_SOUNDS("classicBiomeSounds"),
     CLASSIC_CREATE_WORLD("classicCreateWorld"),
     TITLE_SIDE_BUTTONS("titleSideButtons"), PAUSE_MENU_TEXT("pauseMenuText"), REMOVE_FEEDBACK("removeFeedback"),
     REMOVE_PLAYER_REPORTING("removePlayerReporting"), VERSION("version");
@@ -213,15 +215,34 @@ public enum OldMCOptions implements OptionCatalog.Setting {
     static synchronized void applyChanges(Runnable edits) {
         boolean debugBefore = DEBUG.enabled();
         boolean versionBefore = VERSION.enabled();
+        boolean groundCoverBefore = HIDE_WILDFLOWERS_AND_LEAF_LITTER.enabled();
         var formatBefore = versionFormat;
         edits.run();
         if (!dirty) return;
         saveIfDirty();
         var client = Minecraft.getInstance();
+        if (groundCoverBefore != HIDE_WILDFLOWERS_AND_LEAF_LITTER.enabled() && client.level != null) {
+            client.execute(() -> refreshTerrain(client));
+        }
         if (debugBefore != DEBUG.enabled()) {
             ((LayoutDebugProfile) client.debugEntries).oldmc$onLayoutChanged();
         }
         if (versionBefore != VERSION.enabled() || (formatBefore != versionFormat && versionBefore)) client.updateTitle();
+    }
+
+    private static void refreshTerrain(Minecraft client) {
+        if (client.level == null) return;
+        if (!IS_26_2_OR_LATER) {
+            client.levelRenderer.allChanged();
+            return;
+        }
+        // 26.2 moved the vanilla chunk reload to LevelExtractor. The 26.x JAR also runs on 26.1.
+        try {
+            var extractor = Minecraft.class.getField("levelExtractor").get(client);
+            extractor.getClass().getMethod("allChanged").invoke(extractor);
+        } catch (ReflectiveOperationException e) {
+            LOGGER.warn("[OldMC] Could not refresh the terrain after changing ground cover visibility.", e);
+        }
     }
 
     static synchronized void saveIfDirty() {

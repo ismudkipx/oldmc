@@ -52,8 +52,8 @@ final class OptionCatalog {
     static final List<Section> SECTIONS = List.of(
             new Section("general", DIRT_BACKGROUND, DEBUG, SODIUM_F3_RIGHT, SODIUM_F3_VERSION,
                     IMMEDIATELY_FAST_F3_RIGHT, IMMEDIATELY_FAST_F3_VERSION, IRIS_F3_RIGHT, IRIS_F3_VERSION, VERSION, FORMAT),
-            new Section("world", PERCENTAGE, GRID),
-            new Section("mobs", CLASSIC_BABY_MOBS, CLASSIC_BABY_SOUNDS),
+            new Section("world", PERCENTAGE, GRID, HIDE_FALLING_LEAVES, HIDE_WILDFLOWERS_AND_LEAF_LITTER),
+            new Section("mobs", CLASSIC_BABY_MOBS, CLASSIC_BABY_SOUNDS, CLASSIC_BIOME_MOBS, CLASSIC_BIOME_SOUNDS),
             new Section("menus", CLASSIC_CREATE_WORLD, TITLE_SIDE_BUTTONS, TITLE_FRIEND,
                     PAUSE_MENU_TEXT, PAUSE_FRIEND, REMOVE_FEEDBACK, REMOVE_PLAYER_REPORTING)
     ).stream().filter(section -> !section.settings().isEmpty()).toList();

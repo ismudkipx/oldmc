@@ -10,8 +10,12 @@ OldMC is a client-side Fabric mod that aims to bring the classic Minecraft exper
 - **Classic F3 layout** - Restores the F3 layout from earlier versions in Minecraft 1.21.9 and later.
 - **World loading percentage** - Restores the world loading screen from before Minecraft 1.21.9 by removing the progress bar and bringing back the percentage.
 - **Classic loading grid size** - Restores the 29×29 chunk grid used before Minecraft 1.21.9.
+- **Hide falling leaves** - Hides the falling leaf particles added in 1.21.5.
+- **Hide wildflowers and leaf litter** - Hides wildflowers and leaf litter placed in the world.
 - **Restore baby mob appearances (26.1+)** - Restores the look of baby mobs from before 26.1.
 - **Restore baby mob sounds (26.1+)** - Restores the sounds baby mobs made before 26.1.
+- **Restore biome mob appearances** - Gives warm and cold cows, pigs, and chickens their default temperate appearance.
+- **Restore biome mob sounds** - Replaces the six wolf sound variants introduced in 1.21.5 with classic wolf sounds. In 26.1 and later, also restores classic cow, pig, and chicken sounds.
 - **Classic world creation screen** - Restores the Create New World screen from Minecraft 1.19.3 and earlier.
 - **Classic title screen button layout** - Restores the title screen button layout from earlier versions in Minecraft 26.2 and later.
 - **Text-only pause menu buttons** - Restores the pause menu button layout from earlier versions in Minecraft 26.2 and later.
