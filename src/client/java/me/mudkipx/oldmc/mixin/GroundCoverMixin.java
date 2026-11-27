@@ -17,8 +17,8 @@ abstract class GroundCoverMixin extends VegetationBlock {
 
     @Override
     protected RenderShape getRenderShape(BlockState state) {
-        if ((state.is(Blocks.WILDFLOWERS) || state.is(Blocks.LEAF_LITTER))
-                && OldMCOptions.HIDE_WILDFLOWERS_AND_LEAF_LITTER.enabled()) {
+        if (state.is(Blocks.LEAF_LITTER) ? OldMCOptions.HIDE_LEAF_LITTER.enabled()
+                : OldMCOptions.flowerBedMode().hides(state.getBlock())) {
             return RenderShape.INVISIBLE;
         }
         return super.getRenderShape(state);

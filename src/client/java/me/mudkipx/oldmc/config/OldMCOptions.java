@@ -21,7 +21,7 @@ import java.util.function.Function;
 
 public enum OldMCOptions implements OptionCatalog.Setting {
     PERCENTAGE("percentage"), GRID("grid"), DIRT_BACKGROUND("dirtBackground"), DEBUG("debug"),
-    HIDE_FALLING_LEAVES("hideFallingLeaves"), HIDE_WILDFLOWERS_AND_LEAF_LITTER("hideWildflowersAndLeafLitter"),
+    HIDE_LEAF_LITTER("hideLeafLitter"),
     SODIUM_F3_RIGHT("sodiumF3Right"), SODIUM_F3_VERSION("sodiumF3Version"),
     IMMEDIATELY_FAST_F3_RIGHT("immediatelyFastF3Right"), IMMEDIATELY_FAST_F3_VERSION("immediatelyFastF3Version"),
     IRIS_F3_RIGHT("irisF3Right"), IRIS_F3_VERSION("irisF3Version"),
@@ -35,6 +35,8 @@ public enum OldMCOptions implements OptionCatalog.Setting {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
     private static final Path FILE = FabricLoader.getInstance().getConfigDir().resolve("oldmc.json");
     private static VersionFormat versionFormat = VersionFormat.DEFAULT;
+    private static FallingLeafMode fallingLeafMode = FallingLeafMode.DEFAULT;
+    private static FlowerBedMode flowerBedMode = FlowerBedMode.DEFAULT;
     private static boolean dirty;
     private static boolean preserveUnreadConfig;
     private static final boolean HAS_SODIUM = FabricLoader.getInstance().isModLoaded("sodium");
@@ -98,6 +100,28 @@ public enum OldMCOptions implements OptionCatalog.Setting {
         }
     }
 
+    public static FallingLeafMode fallingLeafMode() {
+        return fallingLeafMode;
+    }
+
+    static void setFallingLeafMode(FallingLeafMode value) {
+        if (fallingLeafMode != value) {
+            fallingLeafMode = value;
+            dirty = true;
+        }
+    }
+
+    public static FlowerBedMode flowerBedMode() {
+        return flowerBedMode;
+    }
+
+    static void setFlowerBedMode(FlowerBedMode value) {
+        if (flowerBedMode != value) {
+            flowerBedMode = value;
+            dirty = true;
+        }
+    }
+
     String nameKey() {
         return "oldmc.option." + key;
     }
@@ -156,11 +180,16 @@ public enum OldMCOptions implements OptionCatalog.Setting {
         friendPlacement = FriendButtonPlacement.DEFAULT;
         titleFriendPlacement = TitleFriendPlacement.DEFAULT;
         versionFormat = VersionFormat.DEFAULT;
+        fallingLeafMode = FallingLeafMode.DEFAULT;
+        flowerBedMode = FlowerBedMode.DEFAULT;
         dirty = true;
         saveIfDirty();
     }
 
     private static void applyConfig(JsonObject data) {
+        migrateGroundCover(data);
+        flowerBedMode = readChoice(data, "hideFlowerBeds", FlowerBedMode.DEFAULT.key(), FlowerBedMode::fromKey);
+        fallingLeafMode = readFallingLeafMode(data);
         friendPlacement = readChoice(data, "friendButtonPlacement",
                 FriendButtonPlacement.DEFAULT.key(), FriendButtonPlacement::fromKey);
         titleFriendPlacement = readChoice(data, "titleFriendButtonPlacement",
@@ -174,6 +203,33 @@ public enum OldMCOptions implements OptionCatalog.Setting {
         for (var option : values()) {
             option.enabled = readBoolean(data, option.key, option.defaultValue);
         }
+    }
+
+    private static void migrateGroundCover(JsonObject data) {
+        String oldKey = "hideWildflowersAndLeafLitter";
+        if (!data.has(oldKey)) return;
+        boolean hidden = readBoolean(data, oldKey, true);
+        if (!data.has("hideFlowerBeds")) {
+            data.addProperty("hideFlowerBeds", (hidden ? FlowerBedMode.WILDFLOWERS : FlowerBedMode.NONE).key());
+        }
+        if (!data.has(HIDE_LEAF_LITTER.key)) data.addProperty(HIDE_LEAF_LITTER.key, hidden);
+        data.remove(oldKey);
+        dirty = true;
+    }
+
+    private static FallingLeafMode readFallingLeafMode(JsonObject data) {
+        String key = "hideFallingLeaves";
+        var value = data.get(key);
+        if (value != null && value.isJsonPrimitive()) {
+            String legacy = value.getAsString();
+            if ("true".equalsIgnoreCase(legacy) || "false".equalsIgnoreCase(legacy)) {
+                var mode = Boolean.parseBoolean(legacy) ? FallingLeafMode.ADDED_IN_1_21_5 : FallingLeafMode.NONE;
+                data.addProperty(key, mode.key());
+                dirty = true;
+                return mode;
+            }
+        }
+        return readChoice(data, key, FallingLeafMode.DEFAULT.key(), FallingLeafMode::fromKey);
     }
 
     private static boolean readBoolean(JsonObject data, String key, boolean fallback) {
@@ -215,13 +271,14 @@ public enum OldMCOptions implements OptionCatalog.Setting {
     static synchronized void applyChanges(Runnable edits) {
         boolean debugBefore = DEBUG.enabled();
         boolean versionBefore = VERSION.enabled();
-        boolean groundCoverBefore = HIDE_WILDFLOWERS_AND_LEAF_LITTER.enabled();
+        boolean litterBefore = HIDE_LEAF_LITTER.enabled();
+        var flowersBefore = flowerBedMode;
         var formatBefore = versionFormat;
         edits.run();
         if (!dirty) return;
         saveIfDirty();
         var client = Minecraft.getInstance();
-        if (groundCoverBefore != HIDE_WILDFLOWERS_AND_LEAF_LITTER.enabled() && client.level != null) {
+        if ((flowersBefore != flowerBedMode || litterBefore != HIDE_LEAF_LITTER.enabled()) && client.level != null) {
             client.execute(() -> refreshTerrain(client));
         }
         if (debugBefore != DEBUG.enabled()) {
@@ -251,6 +308,8 @@ public enum OldMCOptions implements OptionCatalog.Setting {
         data.addProperty("friendButtonPlacement", friendPlacement.key());
         data.addProperty("titleFriendButtonPlacement", titleFriendPlacement.key());
         data.addProperty("versionFormat", versionFormat.key);
+        data.addProperty("hideFallingLeaves", fallingLeafMode.key());
+        data.addProperty("hideFlowerBeds", flowerBedMode.key());
         for (var option : values()) data.addProperty(option.key, option.enabled);
         save(data);
     }
