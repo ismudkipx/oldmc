@@ -23,6 +23,8 @@
   "oldmc.option.classicBabyMobs.tooltip": "Restore baby mob appearances from before 26.1.",
   "oldmc.option.classicBabySounds": "Restore baby mob sounds",
   "oldmc.option.classicBabySounds.tooltip": "Restore baby mob sounds from before 26.1.",
+  "oldmc.option.classicBat": "Restore bat appearance",
+  "oldmc.option.classicBat.tooltip": "Restores the appearance bats had before the 1.20.3 update.",
   "oldmc.option.classicBiomeMobs": "Restore biome mob appearances",
   "oldmc.option.classicBiomeMobs.tooltip": "Restores the default appearance of mobs that received biome variants in 1.21.5.",
   "oldmc.option.classicBiomeSounds": "Restore biome mob sounds",

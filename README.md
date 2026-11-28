@@ -17,6 +17,7 @@ OldMC is a client-side Fabric mod that aims to bring the classic Minecraft exper
 - **Restore baby mob sounds (26.1+)** - Restores the sounds baby mobs made before 26.1.
 - **Restore biome mob appearances** - Gives warm and cold cows, pigs, and chickens their default temperate appearance.
 - **Restore biome mob sounds** - Replaces the six wolf sound variants introduced in 1.21.5 with classic wolf sounds. In 26.1 and later, also restores classic cow, pig, and chicken sounds.
+- **Restore bat appearance** - Restores the bat’s appearance and animations from before Minecraft 1.20.3.
 - **Classic world creation screen** - Restores the Create New World screen from Minecraft 1.19.3 and earlier.
 - **Classic title screen button layout** - Restores the title screen button layout from earlier versions in Minecraft 26.2 and later.
 - **Text-only pause menu buttons** - Restores the pause menu button layout from earlier versions in Minecraft 26.2 and later.

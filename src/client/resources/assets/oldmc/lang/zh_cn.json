@@ -1,4 +1,5 @@
 {
+  "modmenu.descriptionTranslation.oldmc": "恢复经典的Minecraft体验。",
   "oldmc.settings": "OldMC 设置",
   "oldmc.search": "搜索…",
   "oldmc.category.world": "世界",
@@ -23,6 +24,8 @@
   "oldmc.option.classicBabyMobs.tooltip": "恢复 26.1 先前版本的幼年生物外观。",
   "oldmc.option.classicBabySounds": "恢复幼年生物音效",
   "oldmc.option.classicBabySounds.tooltip": "恢复 26.1 先前版本的幼年生物音效。",
+  "oldmc.option.classicBat": "恢复蝙蝠外观",
+  "oldmc.option.classicBat.tooltip": "恢复 1.20.3 更新的蝙蝠外观至先前的样子。",
   "oldmc.option.classicBiomeMobs": "恢复群系生物外观",
   "oldmc.option.classicBiomeMobs.tooltip": "将 1.21.5 更新的群系生物外观恢复成该生物的默认外观。",
   "oldmc.option.classicBiomeSounds": "恢复群系生物音效",

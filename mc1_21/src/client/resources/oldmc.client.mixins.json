@@ -4,6 +4,8 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "BiomeMobAppearanceMixin",
+    "ClassicBatPoseMixin",
+    "ClassicBatRendererMixin",
     "FallingLeafParticleMixin",
     "GroundCoverMixin",
     "BiomeMobSoundMixin",

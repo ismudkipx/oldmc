@@ -27,7 +27,7 @@ public enum OldMCOptions implements OptionCatalog.Setting {
     IRIS_F3_RIGHT("irisF3Right"), IRIS_F3_VERSION("irisF3Version"),
     CLASSIC_BABY_MOBS("classicBabyMobs"), CLASSIC_BABY_SOUNDS("classicBabySounds"),
     CLASSIC_BIOME_MOBS("classicBiomeMobs"), CLASSIC_BIOME_SOUNDS("classicBiomeSounds"),
-    CLASSIC_CREATE_WORLD("classicCreateWorld"),
+    CLASSIC_BAT("classicBat"), CLASSIC_CREATE_WORLD("classicCreateWorld"),
     TITLE_SIDE_BUTTONS("titleSideButtons"), PAUSE_MENU_TEXT("pauseMenuText"), REMOVE_FEEDBACK("removeFeedback"),
     REMOVE_PLAYER_REPORTING("removePlayerReporting"), VERSION("version");
 

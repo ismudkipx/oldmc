@@ -14,6 +14,8 @@
     "BabyHorseMarkingsMixin",
     "BabySoundMixin",
     "BiomeMobAppearanceMixin",
+    "ClassicBatPoseMixin",
+    "ClassicBatRendererMixin",
     "FallingLeafParticleMixin",
     "GroundCoverMixin",
     "LevelLoadingScreenMixin",
