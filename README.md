@@ -7,6 +7,7 @@ OldMC is a client-side Fabric mod that aims to bring the classic Minecraft exper
 ## Features
 
 - **Dirt background** - Restores the dirt background from Minecraft 1.20.4 and earlier, replacing the transparent background used since 1.20.5.
+- **Restore map textures (26.3)** - Restores map item icons and map markers that changed in Minecraft 26.3.
 - **Classic F3 layout** - Restores the F3 layout from earlier versions in Minecraft 1.21.9 and later.
 - **World loading percentage** - Restores the world loading screen from before Minecraft 1.21.9 by removing the progress bar and bringing back the percentage.
 - **Classic loading grid size** - Restores the 29×29 chunk grid used before Minecraft 1.21.9.

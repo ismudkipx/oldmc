@@ -67,6 +67,8 @@
   "oldmc.option.debug.tooltip": "将 F3 的布局恢复成 1.21.8 及先前版本的样子。",
   "oldmc.option.version.tooltip": "在客户端显示旧式版本号。连接服务器时仍使用实际游戏版本。",
   "oldmc.option.versionFormat.tooltip": "如果选择大版本更新格式，则会使用Minecraft先前的大更新版本形式。26.1会是1.22，26.1.x会是1.22.x。26.2会是1.23。\n选择年份更新格式，26.1则会是1.26，26.1.1则会是1.26.1，26.1.2会是1.26.2，26.2会是1.26.3。以此类推。\n选择1.21.x格式时，26.1会显示为1.21.12，之后每次更新或热修复都递增一位，以此类推。\n需要启用“旧版游戏版本号”。",
+  "oldmc.option.classicMapTextures": "恢复地图纹理",
+  "oldmc.option.classicMapTextures.tooltip": "将 26.3 更新的地图纹理恢复至先前的样子。",
   "oldmc.option.dirtBackground": "泥土背景",
   "oldmc.option.dirtBackground.tooltip": "恢复 1.20.4 及先前版本的泥土背景。",
   "oldmc.resetOption": "将“%s”恢复为默认值",

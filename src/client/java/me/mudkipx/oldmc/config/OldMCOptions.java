@@ -21,7 +21,7 @@ import java.util.function.Function;
 
 public enum OldMCOptions implements OptionCatalog.Setting {
     PERCENTAGE("percentage"), GRID("grid"), DIRT_BACKGROUND("dirtBackground"), DEBUG("debug"),
-    HIDE_LEAF_LITTER("hideLeafLitter"),
+    CLASSIC_MAP_TEXTURES("classicMapTextures"), HIDE_LEAF_LITTER("hideLeafLitter"),
     SODIUM_F3_RIGHT("sodiumF3Right"), SODIUM_F3_VERSION("sodiumF3Version"),
     IMMEDIATELY_FAST_F3_RIGHT("immediatelyFastF3Right"), IMMEDIATELY_FAST_F3_VERSION("immediatelyFastF3Version"),
     IRIS_F3_RIGHT("irisF3Right"), IRIS_F3_VERSION("irisF3Version"),
@@ -129,6 +129,7 @@ public enum OldMCOptions implements OptionCatalog.Setting {
     @Override
     public boolean available() {
         return switch (this) {
+            case CLASSIC_MAP_TEXTURES -> GAME_VERSION.equals("26.3");
             case SODIUM_F3_RIGHT -> HAS_SODIUM;
             case VERSION, CLASSIC_BABY_MOBS, CLASSIC_BABY_SOUNDS -> HAS_YEAR_VERSION;
             case SODIUM_F3_VERSION -> HAS_SODIUM && HAS_YEAR_VERSION;
@@ -271,6 +272,7 @@ public enum OldMCOptions implements OptionCatalog.Setting {
     static synchronized void applyChanges(Runnable edits) {
         boolean debugBefore = DEBUG.enabled();
         boolean versionBefore = VERSION.enabled();
+        boolean mapsBefore = CLASSIC_MAP_TEXTURES.enabled();
         boolean litterBefore = HIDE_LEAF_LITTER.enabled();
         var flowersBefore = flowerBedMode;
         var formatBefore = versionFormat;
@@ -278,6 +280,9 @@ public enum OldMCOptions implements OptionCatalog.Setting {
         if (!dirty) return;
         saveIfDirty();
         var client = Minecraft.getInstance();
+        if (CLASSIC_MAP_TEXTURES.available() && mapsBefore != CLASSIC_MAP_TEXTURES.enabled()) {
+            client.execute(client::reloadResourcePacks);
+        }
         if ((flowersBefore != flowerBedMode || litterBefore != HIDE_LEAF_LITTER.enabled()) && client.level != null) {
             client.execute(() -> refreshTerrain(client));
         }
